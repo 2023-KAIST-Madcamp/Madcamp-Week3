@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 import json
 import requests
 import certifi
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 CORS(app)
@@ -16,31 +17,13 @@ client = MongoClient('mongodb+srv://dlgudwls8184:NeTSWJRhf3bF7yIe@cluster0.escpq
 db = client['DevToday']
 
 user_collection = db['User']
+velog_collection = db['Velog']
+velog_rec_collection = db['Velog_Recommended']
+today_collection = db['Heart']
+today_rec_collection = db['Heart_Recommended']
 
 @app.route('/login', methods=['POST'])
-def index():
-    # Perform MongoDB operations here using 'collection'
-    if request.method == 'POST':
-        data = request.json  # Get the JSON data sent from React Native
-        print(data)
-
-
-
-
-        
-        user_list = list(user_collection.find({'kakaoid': data['kakaoid']}))
-        print(user_list)
-        if(len(user_list) != 0):
-            print("이미 존재하는 계정 -> 로그인")
-            print(user_list[0]['_id'])
-            return jsonify({'User_id' : str(user_list[0]['_id'])})
-        else:
-            print("새로운 계정 -> 등록")
-            result = user_collection.insert_one({"kakaoid": data['kakaoid'], "name": data['name']})
-            return jsonify({'user_id' : str(result.inserted_id)})
-
-@app.route('/user', methods=['POST'])
-def receive_token():
+def login():
     if request.method == 'POST':
         data = request.get_json()
         grant_type = data.get('grant_type')
@@ -49,10 +32,6 @@ def receive_token():
         code = data.get('code')
 
         print(data)
-        grant_type = data['grant_type']
-        client_id = data['client_id']
-        redirect_uri = data['redirect_uri']
-        code = data['code']
         print(grant_type)
         
         # Perform actions with the received access token (e.g., store it in the database)
@@ -85,16 +64,132 @@ def receive_token():
         response = requests.request("GET", user_url, headers=headers)
         print("This is the response")
         print(response.text)
+        json_response = response.json()
+        kakao_id = json_response.get('id')  # 카카오 아이디 가져오기
+        profile = json_response.get('kakao_account').get('profile')  # 프로필 정보 가져오기
+        nickname = profile['nickname']
+        thumbnail_image_url = profile['thumbnail_image_url']
+        print(kakao_id)
+        print(nickname)
+        print(thumbnail_image_url)
+        finduser = user_collection.find_one({'kakao_id' : kakao_id})
+        
+        if(finduser):
+            print("존재하는 아이디 -> 로그인 절차 실행")
+            return {'user_id' : str(finduser['_id']), 'kakao_id' : str(finduser['kakao_id']), 'nickname' : str(finduser['nickname']), 'code' : str(finduser['kakao_id']), 'thumbnail_image_url' : str(finduser['thumbnail_image_url'])}
+        
+        else:
+            print("존재하지 않는 아이디 -> db에 등록 실행")
+            result = user_collection.insert_one({"kakao_id": kakao_id, "nickname": nickname, 'code' : str(kakao_id), "thumbnail_image_url" : thumbnail_image_url, "friends" : [], "online" : False})
+            return {'user_id' : str(result.inserted_id), 'kakao_id' : str(kakao_id), 'nickname' : str(nickname), 'code' : str(kakao_id), 'thumbnail_image_url' : str(thumbnail_image_url)}
 
+@app.route('/showvelogs', methods=['POST'])
+def showVelogs():
+    if request.method == 'POST':
+        data = request.get_json()
+        tags_to_find = data['tags']
+        sortby = data['sortby']
+        isascending = data['isascending']
+        velogs_to_show = velog_collection.find({'tags': {'$all': tags_to_find}})
+        if sortby == 'time':
+            sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: doc['time'], reverse = isascending)
+        elif(sortby == 'thumbs'):
+            def getrecentthumbs(doc):
+                doc1 = velog_rec_collection.find({'velog_id' : doc['_id']})
+                score = 0
+                current = datetime.now()
+                for document in doc1:
+                    if current - document['time'] < timedelta(hours=12):
+                        score += 10
+                    elif current - document['time'] < timedelta(days=1):
+                        score += 5
+                    elif current - document['time'] < timedelta(days=3):
+                        score += 2
+                return score
 
-        print(type(response.text))
+            sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: getrecentthumbs(doc), reverse = isascending)
+        else:
+            return {'_velogs_to_show' : None}
+        return {'_velogs_to_show' : sorted_velogs_to_show}
+    
+@app.route('/showfriends', methods=['POST'])
+def showFriends():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        user = user_collection.find_one({'_id' : user_id})
+        friendsidlist = user['friends']
+        cursor = user_collection.find({'_id' : {'$in' : friendsidlist}})
+        friendslist = list(cursor)
+        return list(friendslist)
 
-        json_response = json.loads(response.text)
+@app.route('/addfriends', methods=['POST'])
+def addFriends():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        user_code = data['code']
+        findfriend = user_collection.find_one({'code' : user_code})
+        if(findfriend):
+            friendid = findfriend['_id']
+            print(friendid)
+            result = user_collection.update_one({'_id': user_id}, {'$push': {'friends': friendid}})
+            return {'issucessful' : True}
+        else:
+            return {'issucessful' : False}
+        
+@app.route('/myvelogs', methods=['POST'])
+def myVelogs():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        tags_to_find = data['tags']
+        isascending = data['isascending']
+        velogs_to_show = velog_collection.find({'tags': {'$all': tags_to_find}, 'user_id' : user_id})
+        sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: doc['time'], reverse = isascending)
+        return {'_velogs_to_show' : sorted_velogs_to_show}
+    
+@app.route('/givethumb', methods=['POST'])
+def giveThumb():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        velog_id = data['velog_id']
+        thumbed = velog_rec_collection.find_one({'user_id' : user_id, 'velog_id' : velog_id})
+        if thumbed:
+            upordown = -1
+        else:
+            upordown = 1
+        old_thumbs = velog_collection.find_one({'_id' : velog_id})['thumbs']
+        result = velog_collection.update_one({'_id': velog_id}, {'$push': {'thumbs': old_thumbs + upordown}})
+        if thumbed: return {'isthumbedup' : False}
+        else : return {'isthumbeddown' : True}
 
-        app_username = json_response['properties']['nickname']
-        app_profile_pic = json_response['properties']['profile_image']
+@app.route('/giveheart', methods=['POST'])
+def giveHeart():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        today_id = data['today_id']
+        hearted = today_rec_collection.find_one({'user_id' : user_id, 'today_id' : today_id})
+        if hearted:
+            upordown = -1
+        else:
+            upordown = 1
+        old_hearts = today_collection.find_one({'_id' : today_id})['hearts']
+        result = today_collection.update_one({'_id': today_id}, {'$push': {'hearts': old_hearts + upordown}})
+        if hearted: return {'isheartedup' : False}
+        else : return {'ishearteddown' : True}
 
-        return jsonify("Got kakao id")
+@app.route('/mytodays', methods=['POST'])
+def myTodays():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        mytodays = list(today_collection.find({'user_id' : user_id}))
+        return mytodays
+    
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
