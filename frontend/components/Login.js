@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import { Text, View } from 'react-native'
 import { WebView } from 'react-native-webview';
 
-const REST_API_KEY = '12bbac899de85f22c958c86e7317727d';
-const REDIRECT_URI = 'https://example.com/oauthtravel';
+const REST_API_KEY = 'c3d277401799aacfff4d7d59b13063f7';
+const REDIRECT_URI = 'https://example.com/oauthdevtoday';
 
 export default function Login({navigation}) {
 
     const sendTokenToBackend = async (options) => {
-        const apiUrl = 'http://143.248.192.190:5000/user'; // Replace with your backend API endpoint
+        const apiUrl = 'http://143.248.192.190:5000/login'; // Replace with your backend API endpoint
     
         try {
     
@@ -31,7 +31,7 @@ export default function Login({navigation}) {
             const responseData = await response.json();
             // Handle response data if needed'
             console.log('Token sent to backend:', responseData);
-            navigation.navigate('CameraApp')
+            navigation.navigate('Home')
     
           } else {
             // Handle errors for non-2xx responses
