@@ -39,12 +39,12 @@ function PostItem({item}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     alignItems: 'center',
     marginBottom: '50'
   },
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   postImage: {
     width: '100%',
     height: undefined,
-    aspectRatio: 1 / 1,
+    aspectRatio: 1.2 / 1,
     resizeMode: 'stretch',
   },
   actionContainer: {
