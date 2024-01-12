@@ -17,7 +17,7 @@ def index():
         data = request.json  # Get the JSON data sent from React Native
         print(data)
         user_list = list(user_collection.find({'name': data['name']}))
-        print(len(list(user_collection.find({'name': data['name']}))))
+        print(len(uesr_list))
 
         
         return 'Data received and updated in MongoDB!'
