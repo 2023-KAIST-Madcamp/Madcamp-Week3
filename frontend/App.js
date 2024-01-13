@@ -1,5 +1,5 @@
 // In App.js in a new project
-
+import { DataProvider } from './context/DataContext';
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,20 +8,26 @@ import CameraApp from './components/CameraApp'
 import Login from './components/Login';
 import Home from './components/Home';
 import Map from './components/MapPage';
+import Profile from './components/Profile';
+import Header from './components/Header';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
+    <DataProvider>
       <NavigationContainer >
         <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
           <Stack.Screen name = "Login" component={Login} options={{ headerShown: false }}/>
           <Stack.Screen name = "CameraApp" component={CameraApp} options={{ headerShown: false }}/>
           <Stack.Screen name = "Home" component={Home} options={{ headerShown: false }}/>
           <Stack.Screen name = "Map" component={Map} options={{ headerShown: false }}/>
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name = "Header" component={Header} options={{ headerShown: false }}/>
+
         </Stack.Navigator>
       </NavigationContainer>
-
+    </DataProvider>
   );
 }
 

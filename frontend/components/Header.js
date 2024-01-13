@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo'
 
-export default function Header() {
+export default function Header({navigation}) {
+
+  const handleClick = ()=> {
+    navigation.navigate('Profile') 
+  }
 
     return (
         <View style={styles.container}>
@@ -10,13 +14,13 @@ export default function Header() {
             source={require('../assets/devtoday_logo.png')}
             style={styles.logo}
           />
-            <View style={styles.actionContainer}>
+            <TouchableOpacity onPress={handleClick} style={styles.actionContainer}>
             <Entypo
                 name="user"
                 size={20}
                 style={styles.actionItem}
               />
-            </View>
+            </TouchableOpacity>
         </View>
       );
     }
