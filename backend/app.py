@@ -2,8 +2,10 @@ from pymongo import MongoClient
 from gridfs import GridFS
 from bson.objectid import ObjectId
 from flask_cors import CORS
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, url_for
 from bson.json_util import dumps
+from werkzeug.utils import secure_filename
+import os
 import json
 import requests
 import certifi
@@ -116,8 +118,24 @@ def showVelogs():
     
 @app.route('/createvelog', methods=['POST'])
 def createVelog():
-    if request.method == 'POST':
-        data = request.get_json()
+    print(request)
+    if 'file' in request.files:
+        print('this is request.files')
+        print(request.files)
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        save_path = os.path.join('uploads', filename)
+        file.save(save_path)
+        print(type(filename))
+        
+        # 파일 저장 후 해당 이미지에 접근할 수 있는 URL 생성
+        # 예를 들어, 이미지를 'uploads' 폴더에 저장했다고 가정하면:
+        image_url = url_for('uploads/' + filename, filename=filename, _external=True)
+        print(image_url)
+
+        return jsonify({'message': 'Image uploaded successfully', 'url': image_url})
+    else:
+        return jsonify({'error': 'No image uploaded'}), 400
         
 
     
