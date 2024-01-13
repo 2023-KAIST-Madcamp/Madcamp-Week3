@@ -27,19 +27,6 @@ velog_rec_collection = db['Velog_Recommended']
 today_collection = db['Today']
 today_rec_collection = db['Today_Recommended']
 
-@app.route('/createvelog', methods=['POST'])
-def createVelog():
-    data = request.get_json()
-    print(data)
-    print('createVelog 실행')
-    uri = data.get('file', {}).get('uri')
-
-    # Do something with the uri, e.g., print it
-    print(f'Received uri: {uri}')
-    print("Finished")
-
-    response_data = {'message': 'File uploaded successfully', 'uri': uri}
-    return jsonify(response_data)
 
 @app.route('/createtoday', methods=['POST'])
 def createToday():
