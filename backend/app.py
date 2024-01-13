@@ -6,9 +6,10 @@ from flask import Flask, request, jsonify
 from bson.json_util import dumps
 import json
 import requests
+from werkzeug.utils import secure_filename
 import certifi
 from datetime import datetime, timedelta
-
+import os
 app = Flask(__name__)
 CORS(app)
 ca = certifi.where()
@@ -21,9 +22,37 @@ user_collection = db['User']
 
 velog_collection = db['Velog']
 velog_rec_collection = db['Velog_Recommended']
-today_collection = db['Heart']
-today_rec_collection = db['Heart_Recommended']
+today_collection = db['Today']
+today_rec_collection = db['Today_Recommended']
 
+@app.route('/createvelog', methods=['POST'])
+def createVelog():
+    data = request.get_json()
+    print(data)
+    print('createVelog 실행')
+    uri = data.get('file', {}).get('uri')
+
+    # Do something with the uri, e.g., print it
+    print(f'Received uri: {uri}')
+    print("Finished")
+
+    response_data = {'message': 'File uploaded successfully', 'uri': uri}
+    return jsonify(response_data)
+
+@app.route('/createtoday', methods=['POST'])
+def createToday():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        image = data['image']
+        location = data['location']
+        print(image)
+        current = datetime.now()
+        result = today_collection.insert_one({"user_id": user_id, "image" : image, "location" : location, "time": current.strftime("%Y-%m-%d %H:%M:%S"), "hearts" : 0})
+        if result:
+            return {'issucessful' : True}
+        else:
+            return {'issucessful' : False}
 @app.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
