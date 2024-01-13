@@ -3,10 +3,11 @@ import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
 import SearchBox from './SearchBox';
 import { Entypo } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-
+import { useData } from '../context/DataContext';
 
 export default function SearchContent({props,  navigation}) {
   const [image, setImage] = useState(null);
+  const { userData } = useData(); // Get setUserData from context
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -34,12 +35,16 @@ export default function SearchContent({props,  navigation}) {
     const uploadEndpoint = 'https://143.248.192.190/createvelog';
   
     // Convert the picked image URI to a Blob
-    const response = await fetch(result.uri);
+    const response = await fetch(result.assets[0].uri);
     const blob = await response.blob();
   
     // Create FormData and append the Blob
     const formData = new FormData();
-    formData.append('image', blob, 'image.jpg');
+    formData.append('file', {
+      uri:result.assets[0].uri,
+      type:result.assets[0].type,
+      name: useData[0]
+    });
   
     try {
       // Send a POST request to the Flask backend
