@@ -114,6 +114,13 @@ def showVelogs():
             return {'_velogs_to_show' : None}
         return {'_velogs_to_show' : sorted_velogs_to_show}
     
+@app.route('/createvelog', methods=['POST'])
+def createVelog():
+    if request.method == 'POST':
+        data = request.get_json()
+        
+
+    
 @app.route('/showfriends', methods=['POST'])
 def showFriends():
     if request.method == 'POST':
