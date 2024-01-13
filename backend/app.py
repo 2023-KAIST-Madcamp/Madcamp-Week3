@@ -23,8 +23,7 @@ user_collection = db['User']
 
 velog_collection = db['Velog']
 velog_rec_collection = db['Velog_Recommended']
-today_collection = db['Heart']
-today_rec_collection = db['Heart_Recommended']
+today_collection = db['Today']
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -93,13 +92,16 @@ def showVelogs():
         data = request.get_json()
         tags_to_find = data['tags']
         sortby = data['sortby']
-        isascending = data['isascending']
-        velogs_to_show = velog_collection.find({'tags': {'$all': tags_to_find}})
+        isdescending = data['isdescending']
+        if tags_to_find:
+            velogs_to_show = velog_collection.find({'tags': {'$all': tags_to_find}})
+        else:
+            velogs_to_show = velog_collection.find()
         if sortby == 'time':
-            sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: doc['time'], reverse = isascending)
-        elif(sortby == 'thumbs'):
+            sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: doc['time'], reverse = isdescending)
+        elif sortby == 'thumbs':
             def getrecentthumbs(doc):
-                doc1 = velog_rec_collection.find({'velog_id' : doc['_id']})
+                doc1 = velog_rec_collection.find({'velog_id' : str(doc['_id'])})
                 score = 0
                 current = datetime.now()
                 for document in doc1:
@@ -110,34 +112,56 @@ def showVelogs():
                         score += 5
                     elif current - stored_time < timedelta(days=3):
                         score += 2
+                print(score)
                 return score
 
-            sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: getrecentthumbs(doc), reverse = isascending)
+            sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: getrecentthumbs(doc), reverse = isdescending)
         else:
-            return {'_velogs_to_show' : None}
-        return {'_velogs_to_show' : sorted_velogs_to_show}
+            return {'velogs_to_show' : None}
+        for doc in sorted_velogs_to_show:
+            if '_id' in doc:
+                doc['_id'] = str(doc['_id'])
+        return {'velogs_to_show' : sorted_velogs_to_show}
+    
+@app.route('/showtodays', methods=['GET'])
+def showTodays():
+    if request.method == 'GET':
+        todays_to_show = today_collection.find()
+        sorted_todays_to_show = sorted(todays_to_show, key=lambda doc: doc['time'], reverse = True)
+        for doc in sorted_todays_to_show:
+            if '_id' in doc:
+                doc['_id'] = str(doc['_id'])
+        return {'todays_to_show' : sorted_todays_to_show}
     
 @app.route('/createvelog', methods=['POST'])
 def createVelog():
-    print(request)
-    if 'file' in request.files:
-        print('this is request.files')
-        print(request.files)
-        file = request.files['file']
-        filename = secure_filename(file.filename)
-        save_path = os.path.join('uploads', filename)
-        file.save(save_path)
-        print(type(filename))
-        
-        # 파일 저장 후 해당 이미지에 접근할 수 있는 URL 생성
-        # 예를 들어, 이미지를 'uploads' 폴더에 저장했다고 가정하면:
-        image_url = url_for('uploads/' + filename, filename=filename, _external=True)
-        print(image_url)
+    if request.method == 'POST':
+        data = request.get_json()
+        title = data['title']
+        user_id = data['user_id']
+        images = data['images']
+        content = data['content']
+        tags = data['tags']
+        current = datetime.now()
+        result = velog_collection.insert_one({"title": title, "user_id": user_id, 'content' : content, "images" : images, "tags" : tags, "time": current.strftime("%Y-%m-%d %H:%M:%S"), "thumbs" : 0})
+        if result:
+            return {'issucessful' : True}
+        else:
+            return {'issucessful' : False}
 
-        return jsonify({'message': 'Image uploaded successfully', 'url': image_url})
-    else:
-        return jsonify({'error': 'No image uploaded'}), 400
-        
+@app.route('/createtoday', methods=['POST'])
+def createToday():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        image = data['image']
+        location = data['location']
+        current = datetime.now()
+        result = today_collection.insert_one({"user_id": user_id, "image" : image, "location" : location, "time": current.strftime("%Y-%m-%d %H:%M:%S")})
+        if result:
+            return {'issucessful' : True}
+        else:
+            return {'issucessful' : False}
 
     
 @app.route('/showfriends', methods=['POST'])
@@ -152,7 +176,10 @@ def showFriends():
         print(friendsidlist)
         cursor = user_collection.find({'_id' : {'$in' : friendsidlist}})
         friendslist = list(cursor)
-        return jsonify(json.loads(dumps(list(friendslist))))
+        for doc in friendslist:
+            if '_id' in doc:
+                doc['_id'] = str(doc['_id'])
+        return {'friendslist' : friendslist}
 
 @app.route('/addfriends', methods=['POST'])
 def addFriends():
@@ -177,10 +204,16 @@ def myVelogs():
         data = request.get_json()
         user_id = data['user_id']
         tags_to_find = data['tags']
-        isascending = data['isascending']
-        velogs_to_show = velog_collection.find({'tags': {'$all': tags_to_find}, 'user_id' : user_id})
-        sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: doc['time'], reverse = isascending)
-        return {'_velogs_to_show' : sorted_velogs_to_show}
+        isdescending = data['isdescending']
+        if tags_to_find:
+            velogs_to_show = velog_collection.find({'tags': {'$all': tags_to_find}, 'user_id' : user_id})
+        else:
+            velogs_to_show = velog_collection.find({'user_id' : user_id})
+        sorted_velogs_to_show = sorted(velogs_to_show, key=lambda doc: doc['time'], reverse = isdescending)
+        for doc in sorted_velogs_to_show:
+            if '_id' in doc:
+                doc['_id'] = str(doc['_id'])
+        return {'velogs_to_show' : sorted_velogs_to_show}
     
 @app.route('/givethumb', methods=['POST'])
 def giveThumb():
@@ -191,30 +224,15 @@ def giveThumb():
         thumbed = velog_rec_collection.find_one({'user_id' : user_id, 'velog_id' : velog_id})
         if thumbed:
             upordown = -1
+            velog_rec_collection.delete_one({'velog_id' : velog_id, 'user_id' : user_id})
         else:
             upordown = 1
             current_time = datetime.now()
-            velog_collection.insert_one({'velog_id' : velog_id, 'user_id' : user_id, 'time' : current_time.strftime("%Y-%m-%d %H:%M:%S")})
-        old_thumbs = velog_collection.find_one({'_id' : velog_id})['thumbs']
-        result = velog_collection.update_one({'_id': velog_id}, {'$push': {'thumbs': old_thumbs + upordown}})
+            velog_rec_collection.insert_one({'velog_id' : velog_id, 'user_id' : user_id, 'time' : current_time.strftime("%Y-%m-%d %H:%M:%S")})
+        old_thumbs = velog_collection.find_one({'_id' : ObjectId(velog_id)})['thumbs']
+        result = velog_collection.update_one({'_id': ObjectId(velog_id)}, {'$set': {'thumbs': old_thumbs + upordown}})
         if thumbed: return {'isthumbedup' : False}
-        else : return {'isthumbeddown' : True}
-
-@app.route('/giveheart', methods=['POST'])
-def giveHeart():
-    if request.method == 'POST':
-        data = request.get_json()
-        user_id = data['user_id']
-        today_id = data['today_id']
-        hearted = today_rec_collection.find_one({'user_id' : user_id, 'today_id' : today_id})
-        if hearted:
-            upordown = -1
-        else:
-            upordown = 1
-        old_hearts = today_collection.find_one({'_id' : today_id})['hearts']
-        result = today_collection.update_one({'_id': today_id}, {'$push': {'hearts': old_hearts + upordown}})
-        if hearted: return {'isheartedup' : False}
-        else : return {'ishearteddown' : True}
+        else : return {'isthumbedup' : True}
 
 @app.route('/mytodays', methods=['POST'])
 def myTodays():
@@ -222,7 +240,10 @@ def myTodays():
         data = request.get_json()
         user_id = data['user_id']
         mytodays = list(today_collection.find({'user_id' : user_id}))
-        return mytodays
+        for doc in mytodays:
+            if '_id' in doc:
+                doc['_id'] = str(doc['_id'])
+        return {'mytodays' : mytodays}
     
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
