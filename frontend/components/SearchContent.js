@@ -1,42 +1,51 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
+import SearchBox from './SearchBox';
+import { Entypo } from '@expo/vector-icons';
 
-const SearchContent = props => {
+export default function SearchContent({props,  navigation}) {
+
   const searchData = [
     {
       id: 0,
       images: [
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
       ],
     },
     {
       id: 1,
       images: [
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
       ],
     },
     {
       id: 2,
       images: [
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
-        require('../assets/tiger2.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
       ],
     },
   ];
 
+  const handleCamera = () => {
+    navigation.navigate('CameraApp')
+  }
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
+      <TouchableOpacity onPress={() => handleCamera()}>
+        <Entypo name="camera"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
+      </TouchableOpacity>
     <View>
       {searchData.map((data, index) => {
         return (
@@ -72,4 +81,3 @@ const SearchContent = props => {
     </ScrollView>
   );
 };
-export default SearchContent;
