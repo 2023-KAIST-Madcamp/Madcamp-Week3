@@ -3,6 +3,7 @@ from gridfs import GridFS
 from bson.objectid import ObjectId
 from flask_cors import CORS
 from flask import Flask, request, jsonify
+from bson.json_util import dumps
 import json
 import requests
 import certifi
@@ -80,7 +81,7 @@ def login():
         
         else:
             print("존재하지 않는 아이디 -> db에 등록 실행")
-            result = user_collection.insert_one({"kakao_id": kakao_id, "nickname": nickname, 'code' : str(kakao_id), "thumbnail_image_url" : thumbnail_image_url, "friends" : [], "online" : False})
+            result = user_collection.insert_one({"kakao_id": kakao_id, "nickname": nickname, 'code' : str(kakao_id), "thumbnail_image_url" : thumbnail_image_url, "friends" : [], "location": "", "online" : False})
             return {'user_id' : str(result.inserted_id), 'kakao_id' : str(kakao_id), 'nickname' : str(nickname), 'code' : str(kakao_id), 'thumbnail_image_url' : str(thumbnail_image_url)}
 
 @app.route('/showvelogs', methods=['POST'])
@@ -99,11 +100,12 @@ def showVelogs():
                 score = 0
                 current = datetime.now()
                 for document in doc1:
-                    if current - document['time'] < timedelta(hours=12):
+                    stored_time = datetime.strptime(document['time'], "%Y-%m-%d %H:%M:%S")
+                    if current - stored_time < timedelta(hours=12):
                         score += 10
-                    elif current - document['time'] < timedelta(days=1):
+                    elif current - stored_time < timedelta(days=1):
                         score += 5
-                    elif current - document['time'] < timedelta(days=3):
+                    elif current - stored_time < timedelta(days=3):
                         score += 2
                 return score
 
@@ -116,24 +118,29 @@ def showVelogs():
 def showFriends():
     if request.method == 'POST':
         data = request.get_json()
-        user_id = data['user_id']
+        user_id = ObjectId(data['user_id'])
         user = user_collection.find_one({'_id' : user_id})
+        print(user)
         friendsidlist = user['friends']
+        print("this is friendsidlist")
+        print(friendsidlist)
         cursor = user_collection.find({'_id' : {'$in' : friendsidlist}})
         friendslist = list(cursor)
-        return list(friendslist)
+        return jsonify(json.loads(dumps(list(friendslist))))
 
 @app.route('/addfriends', methods=['POST'])
 def addFriends():
     if request.method == 'POST':
         data = request.get_json()
-        user_id = data['user_id']
+        user_id = ObjectId(data['user_id'])
+        print(type(user_id))
         user_code = data['code']
         findfriend = user_collection.find_one({'code' : user_code})
         if(findfriend):
             friendid = findfriend['_id']
             print(friendid)
             result = user_collection.update_one({'_id': user_id}, {'$push': {'friends': friendid}})
+            print(result)
             return {'issucessful' : True}
         else:
             return {'issucessful' : False}
@@ -160,6 +167,8 @@ def giveThumb():
             upordown = -1
         else:
             upordown = 1
+            current_time = datetime.now()
+            velog_collection.insert_one({'velog_id' : velog_id, 'user_id' : user_id, 'time' : current_time.strftime("%Y-%m-%d %H:%M:%S")})
         old_thumbs = velog_collection.find_one({'_id' : velog_id})['thumbs']
         result = velog_collection.update_one({'_id': velog_id}, {'$push': {'thumbs': old_thumbs + upordown}})
         if thumbed: return {'isthumbedup' : False}
