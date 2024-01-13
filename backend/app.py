@@ -17,19 +17,8 @@ db = client['DevToday']
 
 user_collection = db['User']
 
+
 @app.route('/login', methods=['POST'])
-def index():
-    # Perform MongoDB operations here using 'collection'
-    if request.method == 'POST':
-        data = request.json  # Get the JSON data sent from React Native
-        print(data)
-        user_list = list(user_collection.find({'name': data['name']}))
-        print(len(list(user_collection.find({'name': data['name']}))))
-
-        
-        return 'Data received and updated in MongoDB!'
-
-@app.route('/user', methods=['POST'])
 def receive_token():
     if request.method == 'POST':
         data = request.get_json()
@@ -80,9 +69,6 @@ def receive_token():
         print(type(response.text))
 
         json_response = json.loads(response.text)
-
-        app_username = json_response['properties']['nickname']
-        app_profile_pic = json_response['properties']['profile_image']
 
         return jsonify("Got kakao id")
 

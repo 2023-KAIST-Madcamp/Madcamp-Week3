@@ -31,7 +31,7 @@ export default function Login({navigation}) {
             const responseData = await response.json();
             // Handle response data if needed'
             console.log('Token sent to backend:', responseData);
-            navigation.navigate('CameraApp')
+            navigation.navigate('Home')
     
           } else {
             // Handle errors for non-2xx responses
