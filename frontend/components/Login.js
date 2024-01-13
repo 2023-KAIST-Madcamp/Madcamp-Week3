@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { Text, View } from 'react-native'
 import { WebView } from 'react-native-webview';
+import { useData } from '../context/DataContext';
 
 const REST_API_KEY = 'c3d277401799aacfff4d7d59b13063f7';
 const REDIRECT_URI = 'https://example.com/oauthdevtoday';
 
 export default function Login({navigation}) {
+    const { setUserData } = useData(); // Get setUserData from context
 
     const sendTokenToBackend = async (options) => {
         const apiUrl = 'http://192.249.31.164:5000/login'; // Replace with your backend API endpoint
@@ -31,6 +33,7 @@ export default function Login({navigation}) {
             const responseData = await response.json();
             // Handle response data if needed'
             console.log('Token sent to backend:', responseData);
+            setUserData(responseData); // Store responseData in the context
             navigation.navigate('Home')
     
           } else {

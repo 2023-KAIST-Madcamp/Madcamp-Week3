@@ -6,21 +6,27 @@ import MapPage from './MapPage'
 import { Entypo } from '@expo/vector-icons';
 import Posts from './Posts'
 import SearchContent from './SearchContent'
+import { useData } from '../context/DataContext'
 
 export default function Home({navigation}) {
   const [activeTab, setActiveTab] = useState(1);
   const [image, setImage] = useState(null);
+  const { userData } = useData(); 
 
   const getData = data => {
     setImage(data);
   };
+
+  console.log("This is the user data")
+  console.log(userData)
+  console.log(userData["thumbnail_image_url"])
 
   const handleTabPress = (tabNumber) => {
     setActiveTab(tabNumber);
   };
     return (
       <View style={{flex: 1}}>
-        <Header />      
+        <Header navigation={navigation}/>      
             <View style={{flex: 1}}>
             <View style={styles.tabsContainer}>
         <TouchableOpacity

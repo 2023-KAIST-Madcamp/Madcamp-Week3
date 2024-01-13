@@ -20,6 +20,7 @@ client = MongoClient('mongodb+srv://dlgudwls8184:NeTSWJRhf3bF7yIe@cluster0.escpq
 db = client['DevToday']
 
 user_collection = db['User']
+
 velog_collection = db['Velog']
 velog_rec_collection = db['Velog_Recommended']
 today_collection = db['Heart']
@@ -223,6 +224,5 @@ def myTodays():
         mytodays = list(today_collection.find({'user_id' : user_id}))
         return mytodays
     
-
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
