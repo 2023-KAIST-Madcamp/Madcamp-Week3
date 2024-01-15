@@ -205,13 +205,7 @@ export default function SearchContent(props) {
       };
   
       try {
-        const uploadResponse = await fetch(uploadEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
+        const uploadResponse = await fetch(uploadEndpoint)
         const responseData = await uploadResponse.json(); // Parse JSON response
         setTodayimage(responseData.todays_to_show)
   

@@ -77,6 +77,7 @@ def login():
         print(thumbnail_image_url)
         finduser = user_collection.find_one({'kakao_id' : kakao_id})
         
+        
         if(finduser):
             print("존재하는 아이디 -> 로그인 절차 실행")
             return {'user_id' : str(finduser['_id']), 'kakao_id' : str(finduser['kakao_id']), 'nickname' : str(finduser['nickname']), 'code' : str(finduser['kakao_id']), 'thumbnail_image_url' : str(finduser['thumbnail_image_url'])}
