@@ -25,7 +25,7 @@ export default function SearchContent(props) {
       quality: 1,
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -48,7 +48,7 @@ export default function SearchContent(props) {
 
           image: base64Image,
           location: ' , ',
-        user_id: userData["user_id"],
+          user_id: userData["user_id"],
       };
 
     
@@ -144,9 +144,40 @@ export default function SearchContent(props) {
     // },
   ];
 
-  // const handleCamera = () => {
-  //   navigation.navigate('CameraApp')
-  // }
+  useEffect(() => {
+    const getImageFromBackend = async () => {
+      const uploadEndpoint = 'http://143.248.192.190:5000/showtodays';
+      const requestData = {
+        tags: ["a"],
+        sortby: "time",
+        isdescending: true  
+      };
+  
+      try {
+        const uploadResponse = await fetch(uploadEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        });
+        const responseData = await uploadResponse.json(); // Parse JSON response
+        setTodayimage(responseData.todays_to_show)
+  
+        if (uploadResponse.ok) {
+          console.log('Image Fetched successfully');
+        } else {
+          console.error('Failed to get image from backend:', uploadResponse.status, uploadResponse.statusText);
+        }
+      } catch (error) {
+        console.error('Error getting image:', error);
+      }
+    }
+  
+    getImageFromBackend();
+  
+  }, []); // Provide an empty dependency array
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <TouchableOpacity onPress={pickImage}>
@@ -174,13 +205,11 @@ export default function SearchContent(props) {
                 {/* {data.images.map((imageData, imgIndex) => {
                   return (
                     <TouchableOpacity
-                      key={imgIndex}
-                      onPressIn={() => props.data(imageData)}
-                      onPressOut={() => props.data(null)}
-                      style={{paddingBottom: 2,width:'33%'}}>
+                      key={data._id}
+                      style={{ paddingBottom: 2, width: '33%' }}>
                       <Image
-                        source={imageData}
-                        style={{width: '100%', height: 150}}
+                        source={{ uri: `data:image/png;base64,${data.image}`}}
+                        style={{ width: '100%', height: 150 }}
                       />
                     </TouchableOpacity>
                   );

@@ -10,7 +10,7 @@ export default function Login({navigation}) {
     const { setUserData } = useData(); // Get setUserData from context
 
     const sendTokenToBackend = async (options) => {
-        const apiUrl = 'http://192.249.31.164:5000/login'; // Replace with your backend API endpoint
+        const apiUrl = 'http://143.248.192.190:5000/login'; // Replace with your backend API endpoint
     
         try {
     

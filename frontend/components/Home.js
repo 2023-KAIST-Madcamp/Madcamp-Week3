@@ -1,7 +1,6 @@
 import React, { Component, useState, useEffect } from 'react'
 import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import  Header  from './Header'
-import Stories from './Stories'
 import MapPage from './MapPage'
 import { Entypo } from '@expo/vector-icons';
 import Posts from './Posts'

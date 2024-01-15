@@ -2,14 +2,17 @@ import React, {useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import { useData } from '../context/DataContext';
+
 export const ProfileBody = ({
   name,
   accountName,
-  profileImage,
   post,
   followers,
-  following,
 }) => {
+
+    const { userData } = useData(); // Get setUserData    console.log("This is the userdata in the profile page")
+    console.log(userData)
   return (
     <View>
       {accountName ? (
@@ -24,38 +27,6 @@ export const ProfileBody = ({
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            {/* <Text
-              style={{
-                fontSize: 18,
-                fontWeight: 'bold',
-              }}>
-              {accountName}
-            </Text>
-            <Feather
-              name="chevron-down"
-              style={{
-                fontSize: 20,
-                color: 'black',
-                paddingHorizontal: 5,
-                opacity: 0.5,
-              }}
-            />
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Feather
-              name="plus-square"
-              style={{
-                fontSize: 25,
-                color: 'black',
-                paddingHorizontal: 15,
-              }}
-            />
-            <Feather
-              name="menu"
-              style={{
-                fontSize: 25,
-              }}
-            /> */}
           </View>
         </View>
       ) : null}
@@ -71,7 +42,7 @@ export const ProfileBody = ({
             alignItems: 'center',
           }}>
           <Image
-            source={profileImage}
+            source={{uri: userData["thumbnail_image_url"]}}
             style={{
               resizeMode: 'cover',
               width: 80,
@@ -85,15 +56,14 @@ export const ProfileBody = ({
               fontWeight: 'bold',
               color: 'white'
             }}>
-            {name}
           </Text>
         </View>
         <View style={{alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>{post}</Text>
-          <Text style={{color: 'white'}}>Posts</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>{userData["nickname"]}</Text>
+          <Text style={{color: 'white'}}>{userData["kakao_id"]}</Text>
         </View>
         <View style={{alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>{followers}</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>20</Text>
           <Text style={{color: 'white'}}>Friends</Text>
         </View>
         {/* <View style={{alignItems: 'center'}}>

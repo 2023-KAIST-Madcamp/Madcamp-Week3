@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, ScrollView} from 'react-native';
 import {ProfileBody, ProfileButtons} from './ProfileBody';
 import Entypo from 'react-native-vector-icons/Entypo';
+import BottomTabView from './BottomTabView';
 
 const Profile = ({navigation}) => {
   let circuls = [];
@@ -58,7 +59,7 @@ const Profile = ({navigation}) => {
           profileImage={require('../assets/tiger2.jpg')}
         />
       </View>
-      
+      <BottomTabView />
     </View>
   );
 };

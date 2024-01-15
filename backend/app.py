@@ -8,9 +8,10 @@ from werkzeug.utils import secure_filename
 import os
 import json
 import requests
+from werkzeug.utils import secure_filename
 import certifi
 from datetime import datetime, timedelta
-
+import os
 app = Flask(__name__)
 CORS(app)
 ca = certifi.where()
