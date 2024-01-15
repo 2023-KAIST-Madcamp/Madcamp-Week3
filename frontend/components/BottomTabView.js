@@ -4,6 +4,7 @@ import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo'
+import './global';
 
 const BottomTabView = () => {
   const Tab = createMaterialTopTabNavigator();
@@ -12,7 +13,7 @@ const BottomTabView = () => {
 
   useEffect(() => {
     const getImageFromBackend = async () => {
-      const uploadEndpoint = 'http://192.249.31.81:5000/mytodays';
+      const uploadEndpoint = 'http://' + global.address + ':5000/mytodays';
       const requestData = {
         user_id: userData["user_id"]
       };
