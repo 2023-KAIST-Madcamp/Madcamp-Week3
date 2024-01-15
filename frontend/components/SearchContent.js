@@ -5,12 +5,38 @@ import { Entypo } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useData } from '../context/DataContext';
 import * as FileSystem from 'expo-file-system';
+import {Camera} from 'expo-camera'
+import * as MediaLibray from 'expo-media-library'
+import * as Location from 'expo-location';
+
 
 export default function SearchContent(props) {
   const [image, setImage] = useState(null);
   const { userData } = useData(); // Get setUserData from context
   const [bitimage, setBitimage] = useState(0)
   const [todayimage, setTodayimage] = useState([])
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [locationText, setLocationText] = useState(null)
+
+  useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      
+      setLocation(location);
+      
+    })();
+  }, []);
+
+
  
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -33,9 +59,32 @@ export default function SearchContent(props) {
     }
   };
 
+  const takePhoto = async() => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      console.error('Permission to access camera was denied');
+      return;
+    }
+
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      sendImageToBackend(result);
+    }
+  }
+
   const sendImageToBackend = async (result) => {
     // Your Flask backend endpoint for handling image uploads
-    const uploadEndpoint = 'http://192.249.31.81:5000/createtoday';
+    const uploadEndpoint = 'http://143.248.192.190:5000/createtoday';
+    let text = ""
+    text = JSON.stringify(location.coords.latitude + ', ' + location.coords.longitude);
+    console.log(text)
+    setLocationText(text)
   
     // const blob = await response.blob();
       // Read the image file as base64
@@ -49,6 +98,7 @@ export default function SearchContent(props) {
           image: base64Image,
           location: ' , ',
           user_id: userData["user_id"],
+          location: locationText
       };
 
     
@@ -135,8 +185,11 @@ export default function SearchContent(props) {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <TouchableOpacity onPress={pickImage}>
+      <TouchableOpacity onPress={takePhoto}>
         <Entypo name="camera"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={pickImage}>
+        <Entypo name="folder-images"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
       </TouchableOpacity>
     <View>
     {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}

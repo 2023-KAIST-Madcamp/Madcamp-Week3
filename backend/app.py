@@ -8,10 +8,9 @@ from werkzeug.utils import secure_filename
 import os
 import json
 import requests
-from werkzeug.utils import secure_filename
 import certifi
 from datetime import datetime, timedelta
-import os
+
 app = Flask(__name__)
 CORS(app)
 ca = certifi.where()
@@ -77,6 +76,7 @@ def login():
         print(nickname)
         print(thumbnail_image_url)
         finduser = user_collection.find_one({'kakao_id' : kakao_id})
+        
         
         if(finduser):
             print("존재하는 아이디 -> 로그인 절차 실행")

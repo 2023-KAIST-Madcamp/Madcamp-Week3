@@ -1,8 +1,10 @@
-import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native';
+import React, { Component, useState, useEffect } from 'react'
+import { StyleSheet, View , Text} from 'react-native';
 import MapView from 'react-native-maps';
 
 export default function MapPage() {
+
+
     return (
         <View style={styles.mapcontainer}>
             <MapView style={styles.map}
