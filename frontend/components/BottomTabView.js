@@ -4,7 +4,6 @@ import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo'
-import { useData } from '../context/DataContext';
 
 const BottomTabView = () => {
   const Tab = createMaterialTopTabNavigator();
@@ -27,6 +26,7 @@ const BottomTabView = () => {
           body: JSON.stringify(requestData),
         });
         const responseData = await uploadResponse.json(); // Parse JSON response
+        console.log(responseData)
         setTodayimage(responseData.mytodays)
   
         if (uploadResponse.ok) {
@@ -96,6 +96,7 @@ const BottomTabView = () => {
         }}>
         <View>
             {todayimage.map((data, index) => {
+              console.log(data.image)
               return (
                 <View key={index}>
                   <View
@@ -109,7 +110,7 @@ const BottomTabView = () => {
                       key={data._id}
                       style={{ paddingBottom: 2, width: '33%' }}>
                       <Image
-                        source={{ uri: `data:image/png;base64,${data.image}`}}
+                        source={{ uri: data.image}}
                         style={{ width: '100%', height: 150 }}
                       />
                     </TouchableOpacity>

@@ -1,12 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
-import SearchBox from './SearchBox';
 import { Entypo } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useData } from '../context/DataContext';
 import * as FileSystem from 'expo-file-system';
-import {Camera} from 'expo-camera'
-import * as MediaLibray from 'expo-media-library'
 import * as Location from 'expo-location';
 
 
@@ -80,11 +77,11 @@ export default function SearchContent(props) {
 
   const sendImageToBackend = async (result) => {
     // Your Flask backend endpoint for handling image uploads
-    const uploadEndpoint = 'http://143.248.192.190:5000/createtoday';
-    let text = ""
-    text = JSON.stringify(location.coords.latitude + ', ' + location.coords.longitude);
-    console.log(text)
-    setLocationText(text)
+    const uploadEndpoint = 'http://192.249.31.81:5000/createtoday';
+    let locationArray = []
+    locationArray.push(location.coords.latitude)
+    locationArray.push(location.coords.longitude)
+    console.log(locationArray)
   
     // const blob = await response.blob();
       // Read the image file as base64
@@ -96,9 +93,8 @@ export default function SearchContent(props) {
       const requestData = {
 
           image: base64Image,
-          location: ' , ',
           user_id: userData["user_id"],
-          location: locationText
+          location: locationArray
       };
 
     
@@ -129,11 +125,8 @@ export default function SearchContent(props) {
       const uploadEndpoint = 'http://192.249.31.81:5000/showtodays';
   
       try {
-        const uploadResponse = await fetch(uploadEndpoint);
+        const uploadResponse = await fetch(uploadEndpoint)
         const responseData = await uploadResponse.json(); // Parse JSON response
-        console.log(responseData)
-        console.log(responseData)
-        console.log(typeof(responseData))
         setTodayimage(responseData.todays_to_show)
   
         if (uploadResponse.ok) {
@@ -146,42 +139,9 @@ export default function SearchContent(props) {
       }
     }
   
-    getImageFromBackend(); // Call the function inside useEffect
+    getImageFromBackend();
   
   }, []); // Provide an empty dependency array
-
-  const searchData = [
-    {
-      id: 0,
-      images: [
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        // require('../assets/test1.jpg'),
-        // require('../assets/test1.jpg'),
-        // require('../assets/test1.jpg'),
-        // require('../assets/test1.jpg'),
-      ],
-    },
-    // {
-    //   id: 1,
-    //   images: [
-    //     require('../assets/test1.jpg'),
-    //     require('../assets/test1.jpg'),
-    //     require('../assets/test1.jpg'),
-    //     require('../assets/test1.jpg'),
-    //     require('../assets/test1.jpg'),
-    //     require('../assets/test1.jpg'),
-    //   ],
-    // },
-    // {
-    //   id: 2,
-    //   images: [
-    //     require('../assets/test1.jpg'),
-    //     require('../assets/test1.jpg'),
-    //     require('../assets/test1.jpg'),
-    //   ],
-    // },
-  ];
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -191,54 +151,11 @@ export default function SearchContent(props) {
       <TouchableOpacity onPress={pickImage}>
         <Entypo name="folder-images"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
       </TouchableOpacity>
-    <View>
-    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-    {/* <View style={styles.container}>
-          <Image 
-            style={styles.image}
-            source={{uri: `data:image/png;base64,${bitimage}`}} />
-      </View> */}
 
-      {searchData.map((data, index) => {
-        return (
-          <View key={index}>
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between',
-                  width:'100%'
-                }}>
-                {/* {data.images.map((imageData, imgIndex) => {
-                  return (
-                    <TouchableOpacity
-                      key={data._id}
-                      style={{ paddingBottom: 2, width: '33%' }}>
-                      <Image
-                        source={{ uri: `data:image/png;base64,${data.image}`}}
-                        style={{ width: '100%', height: 150 }}
-                      />
-                    </TouchableOpacity>
-                  );
-                })} */}
-              </View>
-            
-          </View>
-        );
-      })}
-    </View>
-    <View>
-    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-    {/* <View style={styles.container}>
-          <Image 
-            style={styles.image}
-            source={{uri: `data:image/png;base64,${bitimage}`}} />
-      </View> */}
-
-            {todayimage.map((data, index) => {
-              return (
-                <View key={index}>
+      
+      {/* <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingHorizontal: 10 }}>
+    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />} */}
                   <View
                     style={{
                       flexDirection: 'row',
@@ -246,19 +163,24 @@ export default function SearchContent(props) {
                       justifyContent: 'space-between',
                       width: '100%',
                     }}>
+            {todayimage.map((data, index) => {
+              console.log(data.image)
+              return (
+                // <View key={index}>
+
                     <TouchableOpacity
                       key={data._id}
-                      style={{ paddingBottom: 2, width: '33%' }}>
+                      style={{ paddingBottom: 2, width: '50%' }}>
                       <Image
-                        source={{ uri: `data:image/png;base64,${data.image}` }}
-                        style={{ width: '100%', height: 150 }}
+                        source={{ uri : data.image }}
+                        style={{ width: '100%', height: 200 }}
                       />
                     </TouchableOpacity>
-                  </View>
-                </View>
+                  // </View>
               );
             })}
-    </View>
+        </View>
+    {/* </View> */}
 
     </ScrollView>
   );
