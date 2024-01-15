@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
 import SearchBox from './SearchBox';
 import { Entypo } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ export default function SearchContent(props) {
   const [image, setImage] = useState(null);
   const { userData } = useData(); // Get setUserData from context
   const [bitimage, setBitimage] = useState(0)
+  const [todayimage, setTodayimage] = useState([])
  
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -24,7 +25,7 @@ export default function SearchContent(props) {
       quality: 1,
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -47,7 +48,7 @@ export default function SearchContent(props) {
 
           image: base64Image,
           location: ' , ',
-        user_id: userData["user_id"],
+          user_id: userData["user_id"],
       };
 
     
@@ -72,85 +73,69 @@ export default function SearchContent(props) {
       console.error('Error uploading image:', error);
     }
   };
-  const searchData = [
-    {
-      id: 0,
-      images: [
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-      ],
-    },
-    {
-      id: 1,
-      images: [
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-      ],
-    },
-    {
-      id: 2,
-      images: [
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-        require('../assets/test1.jpg'),
-      ],
-    },
-  ];
 
-  // const handleCamera = () => {
-  //   navigation.navigate('CameraApp')
-  // }
+  useEffect(() => {
+    const getImageFromBackend = async () => {
+      const uploadEndpoint = 'http://143.248.192.190:5000/showtodays';
+      const requestData = {
+        tags: ["a"],
+        sortby: "time",
+        isdescending: true  
+      };
+  
+      try {
+        const uploadResponse = await fetch(uploadEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        });
+        const responseData = await uploadResponse.json(); // Parse JSON response
+        setTodayimage(responseData.todays_to_show)
+  
+        if (uploadResponse.ok) {
+          console.log('Image Fetched successfully');
+        } else {
+          console.error('Failed to get image from backend:', uploadResponse.status, uploadResponse.statusText);
+        }
+      } catch (error) {
+        console.error('Error getting image:', error);
+      }
+    }
+  
+    getImageFromBackend();
+  
+  }, []); // Provide an empty dependency array
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <TouchableOpacity onPress={pickImage}>
         <Entypo name="camera"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
       </TouchableOpacity>
     <View>
-    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-    {/* <View style={styles.container}>
-          <Image 
-            style={styles.image}
-            source={{uri: `data:image/png;base64,${bitimage}`}} />
-      </View> */}
-
-      {searchData.map((data, index) => {
-        return (
-          <View key={index}>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between',
-                  width:'100%'
-                }}>
-                {data.images.map((imageData, imgIndex) => {
-                  return (
+            {todayimage.map((data, index) => {
+              return (
+                <View key={index}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                    }}>
                     <TouchableOpacity
-                      key={imgIndex}
-                      onPressIn={() => props.data(imageData)}
-                      onPressOut={() => props.data(null)}
-                      style={{paddingBottom: 2,width:'33%'}}>
+                      key={data._id}
+                      style={{ paddingBottom: 2, width: '33%' }}>
                       <Image
-                        source={imageData}
-                        style={{width: '100%', height: 150}}
+                        source={{ uri: `data:image/png;base64,${data.image}`}}
+                        style={{ width: '100%', height: 150 }}
                       />
                     </TouchableOpacity>
-                  );
-                })}
-              </View>
-            
-          </View>
-        );
-      })}
+                  </View>
+                </View>
+              );
+            })}
     </View>
 
     </ScrollView>
