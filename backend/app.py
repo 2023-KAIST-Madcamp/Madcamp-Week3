@@ -240,10 +240,12 @@ def myTodays():
     if request.method == 'POST':
         data = request.get_json()
         user_id = data['user_id']
+        print("mytodays 들어옴")
         mytodays = list(today_collection.find({'user_id' : user_id}))
         for doc in mytodays:
             if '_id' in doc:
                 doc['_id'] = str(doc['_id'])
+        print(len(mytodays))
         return {'mytodays' : mytodays}
     
 if __name__ == '__main__':
