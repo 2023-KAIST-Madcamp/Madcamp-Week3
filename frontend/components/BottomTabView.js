@@ -3,20 +3,20 @@ import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo'
+import { useData } from '../context/DataContext';
 
 const BottomTabView = () => {
   const Tab = createMaterialTopTabNavigator();
   const [todayimage, setTodayimage] = useState([])
+  const {userData} = useData()
 
   useEffect(() => {
     const getImageFromBackend = async () => {
-      const uploadEndpoint = 'http://143.248.192.190:5000/showtodays';
+      const uploadEndpoint = 'http://192.249.31.81:5000/mytodays';
       const requestData = {
-        tags: ["a"],
-        sortby: "time",
-        isdescending: true  
+        user_id: userData["user_id"]
       };
-  
+      console.log("mytodays 들어옴")
       try {
         const uploadResponse = await fetch(uploadEndpoint, {
           method: 'POST',
@@ -26,7 +26,8 @@ const BottomTabView = () => {
           body: JSON.stringify(requestData),
         });
         const responseData = await uploadResponse.json(); // Parse JSON response
-        setTodayimage(responseData.todays_to_show)
+        console.log(responseData)
+        setTodayimage(responseData.mytodays)
   
         if (uploadResponse.ok) {
           console.log('Image Fetched successfully');
@@ -41,6 +42,8 @@ const BottomTabView = () => {
     getImageFromBackend();
   
   }, []); // Provide an empty dependency array
+
+
 
   let squares = [];
   let numberOfSquare = 7;
