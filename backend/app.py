@@ -88,6 +88,7 @@ def login():
         else:
             print("존재하지 않는 아이디 -> db에 등록 실행")
             result = user_collection.insert_one({"kakao_id": kakao_id, "nickname": nickname, 'code' : str(kakao_id), "thumbnail_image_url" : thumbnail_image_url, "friends" : [], "location": "", "online" : False})
+            result = user_collection.update_one({'_id' : result.inserted_id}, {'$push': {'friends': str(result.inserted_id)}})
             return {'user_id' : str(result.inserted_id), 'kakao_id' : str(kakao_id), 'nickname' : str(nickname), 'code' : str(kakao_id), 'thumbnail_image_url' : str(thumbnail_image_url)}
 
 @app.route('/showvelogs', methods=['POST'])
