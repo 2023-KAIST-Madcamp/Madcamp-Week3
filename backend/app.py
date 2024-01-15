@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from gridfs import GridFS
 from bson.objectid import ObjectId
 from flask_cors import CORS
-from flask import Flask, request, jsonify, url_for
+from flask import Flask, request, jsonify, url_for, send_from_directory
 from bson.json_util import dumps
 from werkzeug.utils import secure_filename
 import os
@@ -10,6 +10,9 @@ import json
 import requests
 import certifi
 from datetime import datetime, timedelta
+import base64
+from PIL import Image
+from io import BytesIO
 
 app = Flask(__name__)
 CORS(app)
@@ -85,6 +88,7 @@ def login():
         else:
             print("존재하지 않는 아이디 -> db에 등록 실행")
             result = user_collection.insert_one({"kakao_id": kakao_id, "nickname": nickname, 'code' : str(kakao_id), "thumbnail_image_url" : thumbnail_image_url, "friends" : [], "location": "", "online" : False})
+            result = user_collection.update_one({'_id' : result.inserted_id}, {'$push': {'friends': str(result.inserted_id)}})
             return {'user_id' : str(result.inserted_id), 'kakao_id' : str(kakao_id), 'nickname' : str(nickname), 'code' : str(kakao_id), 'thumbnail_image_url' : str(thumbnail_image_url)}
 
 @app.route('/showvelogs', methods=['POST'])
@@ -134,17 +138,44 @@ def showTodays():
                 doc['_id'] = str(doc['_id'])
         return {'todays_to_show' : sorted_todays_to_show}
     
+@app.route('/createvelog', methods=['POST'])
+def createVelog():
+    if request.method == 'POST':
+        data = request.get_json()
+        title = data['title']
+        user_id = data['user_id']
+        images = data['images']
+        content = data['content']
+        tags = data['tags']
+        current = datetime.now()
+        result = velog_collection.insert_one({"title": title, "user_id": user_id, 'content' : content, "images" : [], "tags" : tags, "time": current.strftime("%Y-%m-%d %H:%M:%S"), "thumbs" : 0})
+        url = []
+        index = 0
+        for image in images:
+            url.append(save_image(image, 'uploads/velogs/' + str(result.inserted_id) + str(index) +'.png'))
+            index += 1
+        print(url)
+        result = velog_collection.update_one({'_id': result.inserted_id}, {'$set': {'images': url}})
+        if result:
+            return {'issucessful' : True}
+        else:
+            return {'issucessful' : False}
 
 @app.route('/createtoday', methods=['POST'])
 def createToday():
     if request.method == 'POST':
+        print("createToday 들어옴")
         data = request.get_json()
         user_id = data['user_id']
         image = data['image']
         location = data['location']
         print(location)
         current = datetime.now()
-        result = today_collection.insert_one({"user_id": user_id, "image" : image, "location" : location, "time": current.strftime("%Y-%m-%d %H:%M:%S")})
+
+        result = today_collection.insert_one({"user_id": user_id, "image" : "", "location" : location, "time": current.strftime("%Y-%m-%d %H:%M:%S")})
+        url = save_image(image, 'uploads/todays/' + str(result.inserted_id) + '.png')
+        print(url)
+        result = today_collection.update_one({'_id': result.inserted_id}, {'$set': {'image': url}})
         result = user_collection.update_one({'_id': ObjectId(user_id)}, {'$set': {'location': location}})
         if result:
             return {'issucessful' : True}
@@ -249,6 +280,45 @@ def showMap():
                 doc['_id'] = str(doc['_id'])
         print(friends)
         return {'friends' : friends}
+    
+@app.route('/showmap', methods=['POST'])
+def showMap():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        print("showmap 들어옴")
+        me = user_collection.find_one({'_id' : ObjectId(user_id)})
+        friends_id = me['friends']
+        friends = list(map(lambda x : user_collection.find_one({'_id' : ObjectId(x)}), friends_id))
+        for doc in friends:
+            if '_id' in doc:
+                doc['_id'] = str(doc['_id'])
+        print(friends)
+        return {'friends' : friends}
+    
+@app.route('/uploads/todays/<filename>')
+def get_image_todays(filename):
+    return send_from_directory('uploads/todays', filename)
+
+@app.route('/uploads/velogs/<filename>')
+def get_image_velogs(filename):
+    return send_from_directory('uploads/velogs', filename)
+
+def save_image(base64_string, image_path):
+    
+    # base64 문자열을 바이트로 디코딩합니다.
+    image_data = base64.b64decode(base64_string)
+    
+    # BytesIO 객체를 통해 이미지 데이터를 이미지 파일로 변환합니다.
+    image = Image.open(BytesIO(image_data))
+    
+    # 이미지를 파일 시스템에 저장합니다.
+    image.save(image_path)
+    
+    # 저장된 이미지의 URL을 생성합니다. (예: 웹 서버의 URL)
+    image_url = f'http://192.249.31.81:5000/{image_path}'
+    
+    return image_url
     
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

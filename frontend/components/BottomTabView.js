@@ -1,4 +1,5 @@
 import React, {useEffect,useState} from 'react';
+import {useData} from '../context/DataContext'
 import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionic from 'react-native-vector-icons/Ionicons';
@@ -26,7 +27,6 @@ const BottomTabView = () => {
           body: JSON.stringify(requestData),
         });
         const responseData = await uploadResponse.json(); // Parse JSON response
-        console.log(responseData)
         setTodayimage(responseData.mytodays)
   
         if (uploadResponse.ok) {

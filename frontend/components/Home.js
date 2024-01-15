@@ -16,9 +16,11 @@ export default function Home({navigation}) {
     setImage(data);
   };
 
-  console.log("This is the user data")
+  console.log("This is the user data ---")
   console.log(userData)
   console.log(userData["thumbnail_image_url"])
+  console.log("This is the user data end ---")
+
 
   const handleTabPress = (tabNumber) => {
     setActiveTab(tabNumber);
