@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useData } from '../context/DataContext';
 import * as FileSystem from 'expo-file-system';
 import * as Location from 'expo-location';
+import './global';
 
 
 export default function SearchContent(props) {
@@ -77,7 +78,7 @@ export default function SearchContent(props) {
 
   const sendImageToBackend = async (result) => {
     // Your Flask backend endpoint for handling image uploads
-    const uploadEndpoint = 'http://143.248.192.190:5000/createtoday';
+    const uploadEndpoint = 'http://' + global.address + ':5000/createtoday';
     let locationArray = []
     locationArray.push(location.coords.latitude)
     locationArray.push(location.coords.longitude)
@@ -122,7 +123,7 @@ export default function SearchContent(props) {
 
   useEffect(() => {
     const getImageFromBackend = async () => {
-      const uploadEndpoint = 'http://143.248.192.190:5000/showtodays';
+      const uploadEndpoint = 'http://' + global.address + ':5000/showtodays';
   
       try {
         const uploadResponse = await fetch(uploadEndpoint)
@@ -164,6 +165,7 @@ export default function SearchContent(props) {
                       width: '100%',
                     }}>
             {todayimage.map((data, index) => {
+              console.log(data.image)
               return (
                 // <View key={index}>
 
@@ -171,8 +173,8 @@ export default function SearchContent(props) {
                       key={data._id}
                       style={{ paddingBottom: 2, width: '50%' }}>
                       <Image
-                        source={{ uri: data.image }}
-                        style={{ width: '100%', height: 150 }}
+                        source={{ uri : data.image }}
+                        style={{ width: '100%', height: 200 }}
                       />
                     </TouchableOpacity>
                   // </View>
