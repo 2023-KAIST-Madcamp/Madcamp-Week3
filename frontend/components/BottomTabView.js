@@ -12,7 +12,7 @@ const BottomTabView = () => {
 
   useEffect(() => {
     const getImageFromBackend = async () => {
-      const uploadEndpoint = 'http://192.249.31.81:5000/mytodays';
+      const uploadEndpoint = 'http://143.248.192.190:5000/mytodays';
       const requestData = {
         user_id: userData["user_id"]
       };
@@ -109,7 +109,7 @@ const BottomTabView = () => {
                       key={data._id}
                       style={{ paddingBottom: 2, width: '33%' }}>
                       <Image
-                        source={{ uri: `data:image/png;base64,${data.image}`}}
+                        source={{ uri: data.image}}
                         style={{ width: '100%', height: 150 }}
                       />
                     </TouchableOpacity>
@@ -121,29 +121,29 @@ const BottomTabView = () => {
       </ScrollView>
     );
   };
-  // const Tags = () => {
-  //   return (
-  //     <ScrollView
-  //       showsVerticalScrollIndicator={false}
-  //       style={{
-  //         width: '100%',
-  //         height: '100%',
-  //       }}>
-  //       <View
-  //         style={{
-  //           width: '100%',
-  //           height: '100%',
-  //           backgroundColor: 'black',
-  //           flexWrap: 'wrap',
-  //           flexDirection: 'row',
-  //           paddingVertical: 5,
-  //           justifyContent: 'space-between',
-  //         }}>
-  //         {squares}
-  //       </View>
-  //     </ScrollView>
-  //   );
-  // };
+  const MyLocations = () => {
+    return (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'black',
+            flexWrap: 'wrap',
+            flexDirection: 'row',
+            paddingVertical: 5,
+            justifyContent: 'space-between',
+          }}>
+          {squares}
+        </View>
+      </ScrollView>
+    );
+  };
 
   return (
     <Tab.Navigator
@@ -155,24 +155,24 @@ const BottomTabView = () => {
         },
         tabBarIcon: ({focused, colour}) => {
           let iconName;
-          if (route.name === 'Posts') {
+          if (route.name === 'Code') {
             iconName = focused ? 'code' : 'code';
             colour = focused ? 'black' : 'gray';
-          } else {
+          } else if (route.name === "Gallery") {
             iconName = focused ? 'folder-images' : 'folder-images';
             colour = focused ? 'black' : 'gray';
           }
-            // } else if (route.name === 'Tags') {
-          //   iconName = focused ? 'ios-person' : 'ios-person-outline';
-          //   colour = focused ? 'black' : 'gray';
-          // }
+           else {
+            iconName = focused ? 'location' : 'location';
+            colour = focused ? 'black' : 'gray';
+          }
 
           return <Entypo name={iconName} color={colour} size={22} />;
         },
       })}>
       <Tab.Screen name="Code" component={Code} />
       <Tab.Screen name="Gallery" component={Gallery} />
-      {/* <Tab.Screen name="Tags" component={Tags} /> */}
+      <Tab.Screen name="MyLocations" component={MyLocations} />
     </Tab.Navigator>
   );
 };

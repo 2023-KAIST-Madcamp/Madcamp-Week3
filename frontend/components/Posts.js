@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet , ScrollView} from 'react-native';
 import React from 'react';
 import PostItem from './PostItem';
-import SearchBox from './SearchBox';
+import WriteBox from './WriteBox'
 
 function Posts() {
   const postList = [
@@ -39,7 +39,7 @@ function Posts() {
   return (
     <ScrollView
     showsVerticalScrollIndicator={false}>
-        <SearchBox />
+        <WriteBox />
     <View style={styles.container}>
       {
         postList.map((v, i) => {

@@ -77,7 +77,7 @@ def login():
         print(thumbnail_image_url)
         finduser = user_collection.find_one({'kakao_id' : kakao_id})
         
-        
+
         if(finduser):
             print("존재하는 아이디 -> 로그인 절차 실행")
             return {'user_id' : str(finduser['_id']), 'kakao_id' : str(finduser['kakao_id']), 'nickname' : str(finduser['nickname']), 'code' : str(finduser['kakao_id']), 'thumbnail_image_url' : str(finduser['thumbnail_image_url'])}
@@ -134,21 +134,6 @@ def showTodays():
                 doc['_id'] = str(doc['_id'])
         return {'todays_to_show' : sorted_todays_to_show}
     
-@app.route('/createvelog', methods=['POST'])
-def createVelog():
-    if request.method == 'POST':
-        data = request.get_json()
-        title = data['title']
-        user_id = data['user_id']
-        images = data['images']
-        content = data['content']
-        tags = data['tags']
-        current = datetime.now()
-        result = velog_collection.insert_one({"title": title, "user_id": user_id, 'content' : content, "images" : images, "tags" : tags, "time": current.strftime("%Y-%m-%d %H:%M:%S"), "thumbs" : 0})
-        if result:
-            return {'issucessful' : True}
-        else:
-            return {'issucessful' : False}
 
 @app.route('/createtoday', methods=['POST'])
 def createToday():
@@ -157,13 +142,14 @@ def createToday():
         user_id = data['user_id']
         image = data['image']
         location = data['location']
+        print(location)
         current = datetime.now()
         result = today_collection.insert_one({"user_id": user_id, "image" : image, "location" : location, "time": current.strftime("%Y-%m-%d %H:%M:%S")})
+        result = user_collection.update_one({'_id': ObjectId(user_id)}, {'$set': {'location': location}})
         if result:
             return {'issucessful' : True}
         else:
             return {'issucessful' : False}
-
     
 @app.route('/showfriends', methods=['POST'])
 def showFriends():
@@ -193,7 +179,7 @@ def addFriends():
         if(findfriend):
             friendid = findfriend['_id']
             print(friendid)
-            result = user_collection.update_one({'_id': user_id}, {'$push': {'friends': friendid}})
+            result = user_collection.update_one({'_id': user_id}, {'$push': {'friends': str(friendid)}})
             print(result)
             return {'issucessful' : True}
         else:
@@ -247,6 +233,22 @@ def myTodays():
                 doc['_id'] = str(doc['_id'])
         print(len(mytodays))
         return {'mytodays' : mytodays}
+
+@app.route('/showmap', methods=['POST'])
+def showMap():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        print("showmap 들어옴")
+        print(user_id)
+        me = user_collection.find_one({'_id' : ObjectId(user_id)})
+        friends_id = me['friends']
+        friends = list(map(lambda x : user_collection.find_one({'_id' : ObjectId(x)}), friends_id))
+        for doc in friends:
+            if '_id' in doc:
+                doc['_id'] = str(doc['_id'])
+        print(friends)
+        return {'friends' : friends}
     
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

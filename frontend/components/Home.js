@@ -49,8 +49,8 @@ export default function Home({navigation}) {
       </View>
                 {/* <Stories /> */}
                 {activeTab === 1 && <Posts />}
-      {activeTab === 2 && <SearchContent data={getData} navigation={navigation} />}
-      {activeTab === 3 && <MapPage />}
+                {activeTab === 2 && <SearchContent data={getData} navigation={navigation} />}
+                {activeTab === 3 && <MapPage />}
             </View>
       </View>
     )
