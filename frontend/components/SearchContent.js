@@ -77,20 +77,9 @@ export default function SearchContent(props) {
   useEffect(() => {
     const getImageFromBackend = async () => {
       const uploadEndpoint = 'http://192.249.31.81:5000/showtodays';
-      const requestData = {
-        tags: ["a"],
-        sortby: "time",
-        isdescending: true  
-      };
   
       try {
-        const uploadResponse = await fetch(uploadEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
+        const uploadResponse = await fetch(uploadEndpoint);
         const responseData = await uploadResponse.json(); // Parse JSON response
         console.log(responseData)
         console.log(responseData)
@@ -143,40 +132,6 @@ export default function SearchContent(props) {
     //   ],
     // },
   ];
-
-  useEffect(() => {
-    const getImageFromBackend = async () => {
-      const uploadEndpoint = 'http://143.248.192.190:5000/showtodays';
-      const requestData = {
-        tags: ["a"],
-        sortby: "time",
-        isdescending: true  
-      };
-  
-      try {
-        const uploadResponse = await fetch(uploadEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
-        const responseData = await uploadResponse.json(); // Parse JSON response
-        setTodayimage(responseData.todays_to_show)
-  
-        if (uploadResponse.ok) {
-          console.log('Image Fetched successfully');
-        } else {
-          console.error('Failed to get image from backend:', uploadResponse.status, uploadResponse.statusText);
-        }
-      } catch (error) {
-        console.error('Error getting image:', error);
-      }
-    }
-  
-    getImageFromBackend();
-  
-  }, []); // Provide an empty dependency array
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
