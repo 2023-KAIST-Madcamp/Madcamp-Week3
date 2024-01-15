@@ -281,20 +281,20 @@ def showMap():
         print(friends)
         return {'friends' : friends}
     
-@app.route('/showmap', methods=['POST'])
-def showMap():
-    if request.method == 'POST':
-        data = request.get_json()
-        user_id = data['user_id']
-        print("showmap 들어옴")
-        me = user_collection.find_one({'_id' : ObjectId(user_id)})
-        friends_id = me['friends']
-        friends = list(map(lambda x : user_collection.find_one({'_id' : ObjectId(x)}), friends_id))
-        for doc in friends:
-            if '_id' in doc:
-                doc['_id'] = str(doc['_id'])
-        print(friends)
-        return {'friends' : friends}
+# @app.route('/showmap', methods=['POST'])
+# def showMap():
+#     if request.method == 'POST':
+#         data = request.get_json()
+#         user_id = data['user_id']
+#         print("showmap 들어옴")
+#         me = user_collection.find_one({'_id' : ObjectId(user_id)})
+#         friends_id = me['friends']
+#         friends = list(map(lambda x : user_collection.find_one({'_id' : ObjectId(x)}), friends_id))
+#         for doc in friends:
+#             if '_id' in doc:
+#                 doc['_id'] = str(doc['_id'])
+#         print(friends)
+#         return {'friends' : friends}
     
 @app.route('/uploads/todays/<filename>')
 def get_image_todays(filename):
