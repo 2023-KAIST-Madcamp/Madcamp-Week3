@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useData } from '../context/DataContext';
 import * as FileSystem from 'expo-file-system';
 import * as Location from 'expo-location';
+import './global';
 
 
 export default function SearchContent(props) {
@@ -77,7 +78,7 @@ export default function SearchContent(props) {
 
   const sendImageToBackend = async (result) => {
     // Your Flask backend endpoint for handling image uploads
-    const uploadEndpoint = 'http://192.249.31.81:5000/createtoday';
+    const uploadEndpoint = 'http://' + global.address + ':5000/createtoday';
     let locationArray = []
     locationArray.push(location.coords.latitude)
     locationArray.push(location.coords.longitude)
@@ -122,7 +123,7 @@ export default function SearchContent(props) {
 
   useEffect(() => {
     const getImageFromBackend = async () => {
-      const uploadEndpoint = 'http://192.249.31.81:5000/showtodays';
+      const uploadEndpoint = 'http://' + global.address + ':5000/showtodays';
   
       try {
         const uploadResponse = await fetch(uploadEndpoint)
