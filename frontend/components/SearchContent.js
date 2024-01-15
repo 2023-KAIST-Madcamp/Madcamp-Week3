@@ -126,6 +126,76 @@ export default function SearchContent(props) {
 
   useEffect(() => {
     const getImageFromBackend = async () => {
+      const uploadEndpoint = 'http://192.249.31.81:5000/showtodays';
+      const requestData = {
+        tags: ["a"],
+        sortby: "time",
+        isdescending: true  
+      };
+  
+      try {
+        const uploadResponse = await fetch(uploadEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        });
+        const responseData = await uploadResponse.json(); // Parse JSON response
+        console.log(responseData)
+        console.log(responseData)
+        console.log(typeof(responseData))
+        setTodayimage(responseData.todays_to_show)
+  
+        if (uploadResponse.ok) {
+          console.log('Image Fetched successfully');
+        } else {
+          console.error('Failed to get image from backend:', uploadResponse.status, uploadResponse.statusText);
+        }
+      } catch (error) {
+        console.error('Error getting image:', error);
+      }
+    }
+  
+    getImageFromBackend(); // Call the function inside useEffect
+  
+  }, []); // Provide an empty dependency array
+
+  const searchData = [
+    {
+      id: 0,
+      images: [
+        require('../assets/test1.jpg'),
+        require('../assets/test1.jpg'),
+        // require('../assets/test1.jpg'),
+        // require('../assets/test1.jpg'),
+        // require('../assets/test1.jpg'),
+        // require('../assets/test1.jpg'),
+      ],
+    },
+    // {
+    //   id: 1,
+    //   images: [
+    //     require('../assets/test1.jpg'),
+    //     require('../assets/test1.jpg'),
+    //     require('../assets/test1.jpg'),
+    //     require('../assets/test1.jpg'),
+    //     require('../assets/test1.jpg'),
+    //     require('../assets/test1.jpg'),
+    //   ],
+    // },
+    // {
+    //   id: 2,
+    //   images: [
+    //     require('../assets/test1.jpg'),
+    //     require('../assets/test1.jpg'),
+    //     require('../assets/test1.jpg'),
+    //   ],
+    // },
+  ];
+
+  useEffect(() => {
+    const getImageFromBackend = async () => {
       const uploadEndpoint = 'http://143.248.192.190:5000/showtodays';
       const requestData = {
         tags: ["a"],
@@ -168,6 +238,50 @@ export default function SearchContent(props) {
         <Entypo name="folder-images"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
       </TouchableOpacity>
     <View>
+    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+    {/* <View style={styles.container}>
+          <Image 
+            style={styles.image}
+            source={{uri: `data:image/png;base64,${bitimage}`}} />
+      </View> */}
+
+      {searchData.map((data, index) => {
+        return (
+          <View key={index}>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
+                  width:'100%'
+                }}>
+                {/* {data.images.map((imageData, imgIndex) => {
+                  return (
+                    <TouchableOpacity
+                      key={data._id}
+                      style={{ paddingBottom: 2, width: '33%' }}>
+                      <Image
+                        source={{ uri: `data:image/png;base64,${data.image}`}}
+                        style={{ width: '100%', height: 150 }}
+                      />
+                    </TouchableOpacity>
+                  );
+                })} */}
+              </View>
+            
+          </View>
+        );
+      })}
+    </View>
+    <View>
+    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+    {/* <View style={styles.container}>
+          <Image 
+            style={styles.image}
+            source={{uri: `data:image/png;base64,${bitimage}`}} />
+      </View> */}
+
             {todayimage.map((data, index) => {
               return (
                 <View key={index}>
@@ -182,7 +296,7 @@ export default function SearchContent(props) {
                       key={data._id}
                       style={{ paddingBottom: 2, width: '33%' }}>
                       <Image
-                        source={{ uri: `data:image/png;base64,${data.image}`}}
+                        source={{ uri: `data:image/png;base64,${data.image}` }}
                         style={{ width: '100%', height: 150 }}
                       />
                     </TouchableOpacity>
