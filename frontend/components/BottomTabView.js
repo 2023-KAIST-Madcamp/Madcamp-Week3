@@ -19,6 +19,8 @@ const BottomTabView = () => {
       };
       console.log("mytodays 들어옴")
       try {
+        console.log(requestData)
+        console.log(JSON.stringify(requestData))
         const uploadResponse = await fetch(uploadEndpoint, {
           method: 'POST',
           headers: {

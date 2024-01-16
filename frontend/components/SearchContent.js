@@ -146,14 +146,14 @@ export default function SearchContent(props) {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <TouchableOpacity onPress={takePhoto}>
-        <Entypo name="camera"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={pickImage}>
-        <Entypo name="folder-images"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
-      </TouchableOpacity>
-
-
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={takePhoto} style={styles.button}>
+          <Entypo name="camera" size={20} color={'white'}/>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={pickImage} style={styles.button}>
+          <Entypo name="folder-images" size={20} color={'white'}/>
+        </TouchableOpacity>
+      </View>
       
       {/* <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingHorizontal: 10 }}>
     {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />} */}
@@ -191,6 +191,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    backgroundColor: 'black',
+    padding: 20,
+  },
+  button: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginHorizontal: 10,
   },
   image: {
     height: 200,
