@@ -132,20 +132,28 @@ export const ProfileButtons = ({id, name, accountName, profileImage}) => {
               marginBottom: 10
             }}
           />
-          <TouchableOpacity onPress={handleAddFriend}>
-        <View
-          style={{
-            width: '100%',
-            height: 35,
-            borderRadius: 5,
-            backgroundColor: 'black',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 20,
-          }}>
-          <Text style={{ color: 'white' }}>Add Friend</Text>
-        </View>
-      </TouchableOpacity>
+          <TouchableOpacity onPress={handleAddFriend} style={{ width: '100%'}}>
+            <View
+              style={{
+                width: '100%',
+                height: 35,
+                borderRadius: 5,
+                borderColor: '#DEDEDE',
+                borderWidth: 1,
+                backgroundColor: 'black',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 10,
+              }}>
+              <Text style={{
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    letterSpacing: 1,
+                    opacity: 0.8,
+                    color: 'white'
+                  }}>Add Friend</Text>
+            </View>
+          </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
                 navigation.push('EditProfile', {
