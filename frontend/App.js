@@ -10,6 +10,8 @@ import Home from './components/Home';
 import Map from './components/MapPage';
 import Profile from './components/Profile';
 import Header from './components/Header';
+import NewPost from './components/NewPost';
+import Posts from './components/Posts';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,9 @@ function App() {
           <Stack.Screen name = "Map" component={Map} options={{ headerShown: false }}/>
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name = "Header" component={Header} options={{ headerShown: false }}/>
+          <Stack.Screen name="NewPost" component={NewPost} />
+          <Stack.Screen name="Posts" component={Posts} />
+
 
         </Stack.Navigator>
       </NavigationContainer>

@@ -80,7 +80,7 @@ def login():
         print(thumbnail_image_url)
         finduser = user_collection.find_one({'kakao_id' : kakao_id})
         
-        
+
         if(finduser):
             print("존재하는 아이디 -> 로그인 절차 실행")
             return {'user_id' : str(finduser['_id']), 'kakao_id' : str(finduser['kakao_id']), 'nickname' : str(finduser['nickname']), 'code' : str(finduser['kakao_id']), 'thumbnail_image_url' : str(finduser['thumbnail_image_url'])}
@@ -170,6 +170,7 @@ def createToday():
         user_id = data['user_id']
         image = data['image']
         location = data['location']
+        print(location)
         current = datetime.now()
 
         result = today_collection.insert_one({"user_id": user_id, "image" : "", "location" : location, "time": current.strftime("%Y-%m-%d %H:%M:%S")})
@@ -181,7 +182,6 @@ def createToday():
             return {'issucessful' : True}
         else:
             return {'issucessful' : False}
-
     
 @app.route('/showfriends', methods=['POST'])
 def showFriends():
@@ -265,13 +265,14 @@ def myTodays():
                 doc['_id'] = str(doc['_id'])
         print(len(mytodays))
         return {'mytodays' : mytodays}
-    
+
 @app.route('/showmap', methods=['POST'])
 def showMap():
     if request.method == 'POST':
         data = request.get_json()
         user_id = data['user_id']
         print("showmap 들어옴")
+        print(user_id)
         me = user_collection.find_one({'_id' : ObjectId(user_id)})
         friends_id = me['friends']
         friends = list(map(lambda x : user_collection.find_one({'_id' : ObjectId(x)}), friends_id))
@@ -281,6 +282,21 @@ def showMap():
         print(friends)
         return {'friends' : friends}
 
+    
+# @app.route('/showmap', methods=['POST'])
+# def showMap():
+#     if request.method == 'POST':
+#         data = request.get_json()
+#         user_id = data['user_id']
+#         print("showmap 들어옴")
+#         me = user_collection.find_one({'_id' : ObjectId(user_id)})
+#         friends_id = me['friends']
+#         friends = list(map(lambda x : user_collection.find_one({'_id' : ObjectId(x)}), friends_id))
+#         for doc in friends:
+#             if '_id' in doc:
+#                 doc['_id'] = str(doc['_id'])
+#         print(friends)
+#         return {'friends' : friends}
     
 @app.route('/uploads/todays/<filename>')
 def get_image_todays(filename):

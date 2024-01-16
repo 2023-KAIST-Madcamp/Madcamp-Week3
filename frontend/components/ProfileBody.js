@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import { useData } from '../context/DataContext';
@@ -10,9 +10,10 @@ export const ProfileBody = ({
   post,
   followers,
 }) => {
-
     const { userData } = useData(); // Get setUserData    console.log("This is the userdata in the profile page")
     console.log(userData)
+
+  
   return (
     <View>
       {accountName ? (
@@ -66,10 +67,6 @@ export const ProfileBody = ({
           <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>20</Text>
           <Text style={{color: 'white'}}>Friends</Text>
         </View>
-        {/* <View style={{alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>{following}</Text>
-          <Text style={{color: 'white'}}>Following</Text>
-        </View> */}
       </View>
     </View>
   );
@@ -78,107 +75,111 @@ export const ProfileBody = ({
 export const ProfileButtons = ({id, name, accountName, profileImage}) => {
   const navigation = useNavigation();
   const [follow, setFollow] = useState(follow);
+  const [friendName, setFriendName] = useState('');
+  const {userData} = useData()
+
+  const handleAddFriend = () => {
+    // Your backend endpoint for adding friends
+    const apiUrl = 'http://' + global.address + ':5000/addfriends'; // Replace with your backend API endpoint
+
+    // Create an object with the necessary data
+    const requestData = {
+      user_id: userData['user_id'],
+      code: friendName,
+    };
+
+    // Send a POST request to the backend
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        // Handle the response from the backend if needed
+        console.log(responseData);
+      })
+      .catch((error) => {
+        console.error('Error adding friend:', error);
+      });
+  };
+
   return (
     <>
-      {id === 0 ? (
         <View
           style={{
             width: '100%',
-            flexDirection: 'row',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'space-evenly',
             paddingVertical: 5,
           }}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.push('EditProfile', {
-                name: name,
-                accountName: accountName,
-                profileImage: profileImage,
-              })
-            }
+             <TextInput
+            placeholder="Add Friends"
+            placeholderTextColor="#909090"
+            onChangeText={(text) => setFriendName(text)}
             style={{
-              width: '100%',
-            }}>
-            <View
-              style={{
-                width: '100%',
-                height: 35,
-                borderRadius: 5,
-                borderColor: '#DEDEDE',
-                borderWidth: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: 14,
-                  letterSpacing: 1,
-                  opacity: 0.8,
-                  color: 'white'
-                }}>
-                Edit Profile
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      ) : (
+              width: '94%',
+              backgroundColor: '#EBEBEB',
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 15,
+              padding: 4,
+              paddingLeft: 20,
+              marginBottom: 10
+            }}
+          />
+          <TouchableOpacity onPress={handleAddFriend}>
         <View
           style={{
             width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
+            height: 35,
+            borderRadius: 5,
+            backgroundColor: 'black',
+            justifyContent: 'center',
             alignItems: 'center',
+            marginBottom: 20,
           }}>
-          <TouchableOpacity
-            onPress={() => setFollow(!follow)}
-            style={{width: '42%'}}>
-            <View
+          <Text style={{ color: 'white' }}>Add Friend</Text>
+        </View>
+      </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.push('EditProfile', {
+                  name: name,
+                  accountName: accountName,
+                  profileImage: profileImage,
+                })
+              }
               style={{
                 width: '100%',
-                height: 35,
-                borderRadius: 5,
-                backgroundColor: follow ? null : '#3493D9',
-                borderWidth: follow ? 1 : 0,
-                borderColor: '#DEDEDE',
-                justifyContent: 'center',
-                alignItems: 'center',
               }}>
-              <Text style={{color: follow ? 'black' : 'white'}}>
-                {follow ? 'Following' : 'Follow'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <View
-            style={{
-              width: '42%',
-              height: 35,
-              borderWidth: 1,
-              borderColor: '#DEDEDE',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-            }}>
-            <Text style={{color: 'white'}}>Message</Text>
-          </View>
-          <View
-            style={{
-              width: '10%',
-              height: 35,
-              borderWidth: 1,
-              borderColor: '#DEDEDE',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-            }}>
-            <Feather
-              name="chevron-down"
-              style={{fontSize: 20, color: 'black'}}
-            />
-          </View>
+              <View
+                style={{
+                  width: '100%',
+                  height: 35,
+                  borderRadius: 5,
+                  borderColor: '#DEDEDE',
+                  borderWidth: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    letterSpacing: 1,
+                    opacity: 0.8,
+                    color: 'white'
+                  }}>
+                  Edit Profile
+                </Text>
+              </View>
+            </TouchableOpacity>    
         </View>
-      )}
     </>
   );
 };

@@ -21,7 +21,6 @@ function PostItem({item}) {
       <View style={styles.headerContainer}>
         <View style={styles.headerUserContainer}>
             <Avatar imgSource={item.user.imgSource} size={40}/>
-
           <Text style={styles.headerUsername}>{item.user.username}</Text>
         </View>
       </View>
