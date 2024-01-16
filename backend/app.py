@@ -144,18 +144,19 @@ def createVelog():
         data = request.get_json()
         title = data['title']
         user_id = data['user_id']
-        images = data['images']
-        content = data['content']
+        contents = data['contents']
         tags = data['tags']
         current = datetime.now()
-        result = velog_collection.insert_one({"title": title, "user_id": user_id, 'content' : content, "images" : [], "tags" : tags, "time": current.strftime("%Y-%m-%d %H:%M:%S"), "thumbs" : 0})
+        result = velog_collection.insert_one({"title": title, "user_id": user_id, 'contents' : contents, "tags" : tags, "time": current.strftime("%Y-%m-%d %H:%M:%S"), "thumbs" : 0})
         url = []
         index = 0
-        for image in images:
-            url.append(save_image(image, 'uploads/velogs/' + str(result.inserted_id) + str(index) +'.png'))
+        for content in contents:
+            if content['type'] == 'image':
+                new_url = save_image(content['content'], 'uploads/velogs/' + str(result.inserted_id) + str(index) +'.png')
+                content['content'] = new_url
             index += 1
-        print(url)
-        result = velog_collection.update_one({'_id': result.inserted_id}, {'$set': {'images': url}})
+        print(contents)
+        result = velog_collection.update_one({'_id': result.inserted_id}, {'$set': {'contents': contents}})
         if result:
             return {'issucessful' : True}
         else:
@@ -280,6 +281,7 @@ def showMap():
                 doc['_id'] = str(doc['_id'])
         print(friends)
         return {'friends' : friends}
+
     
 # @app.route('/showmap', methods=['POST'])
 # def showMap():
