@@ -3,53 +3,25 @@ import React , {useState, useEffect} from 'react';
 import PostItem from './PostItem';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { useNavigation } from '@react-navigation/native';
-
+import { useData } from '../context/DataContext';
+import Avatar from './Avatar'
 function Posts() {
   const navigation = useNavigation();
   const [postlist, setPostlist] = useState([])
-
-  // const postList = [
-  //   {
-  //     imgSource: require('../assets/blog1.png'),
-  //     caption: 'Grateful for this beautiful life and the amazing people in it.',
-  //     user: {
-  //       imgSource: 'http://k.kakaocdn.net/dn/cXX1XZ/btrKzgMeyWQ/Q3hKcvlZ6oPaKK9CSIj3u1/img_640x640.jpg',
-  //       username: 'Shopia',
-  //       isOwn: false,
-  //       isHasStory: true
-  //     },
-  //   },
-  //   {
-  //     imgSource: require('../assets/blog2.png'),
-  //     caption: 'Grateful for this beautiful life and the amazing people in it.',
-  //     user: {
-  //       imgSource: 'http://k.kakaocdn.net/dn/cXX1XZ/btrKzgMeyWQ/Q3hKcvlZ6oPaKK9CSIj3u1/img_640x640.jpg',
-  //       username: 'Alexander',
-  //       isOwn: false,
-  //       isHasStory: true
-  //     },
-  //   },
-  //   {
-  //     imgSource: require('../assets/blog3.png'),
-  //     caption: 'Grateful for this beautiful life and the amazing people in it.',
-  //     user: {
-  //       imgSource: 'http://k.kakaocdn.net/dn/cXX1XZ/btrKzgMeyWQ/Q3hKcvlZ6oPaKK9CSIj3u1/img_640x640.jpg',
-  //       username: 'Shopia',
-  //       isOwn: false,
-  //       isHasStory: true
-  //     },
-  //   }
-  // ]
+  const {userData} = useData()
+  console.log(userData["user_id"])
 
   const handleWrite = () => {
     navigation.navigate('NewPost')
  }
 
+ const handleDetails = (i) => {
+  navigation.navigate('Details', {key: i})
+ }
  useEffect(() => {
   const getVelogFromBackend = async () => {
     const uploadEndpoint = 'http://' + global.address + ':5000/showvelogs';
     const requestData = {
-
       tags: [],
       sortby: "time",
       isdescending: true
@@ -63,16 +35,16 @@ function Posts() {
         body: JSON.stringify(requestData),
       });
       const responseData = await uploadResponse.json(); // Parse JSON response
-      setPostlist(responseData.velogs_to_show)
+      console.log("This is the data from showvelogs in the home screen")
       console.log(responseData)
-      console.log(responseData.velogs_to_show)
+      setPostlist(responseData.velogs_to_show)
       if (uploadResponse.ok) {
         console.log('Velog Fetched successfully');
       } else {
         console.error('Failed to get velog from backend:', uploadResponse.status, uploadResponse.statusText);
       }
     } catch (error) {
-      console.error('Error getting velog:', error);
+      console.error('Error getting Velogs :', error);
     }
   }
 
@@ -90,7 +62,20 @@ const Section = ({ type, content }) => {
       return null;
   }
 };
+const imagesInSection = postlist.map(post => ({
+  _id: post._id,
+  images: post.sections.filter(section => section.type === "image")
+}));
 
+// console.log(imagesInSection)
+// console.log("This is the fetched image")
+// console.log(imagesInSection[0].images[0].content)
+const [isLiked, setIsLiked] = useState(false);
+
+const handleThumbs = () => {
+  setIsLiked(!isLiked);
+  // Add your logic for handling the like/unlike action here
+};
   return (
     <ScrollView
     showsVerticalScrollIndicator={false}>
@@ -107,22 +92,48 @@ const Section = ({ type, content }) => {
         <Entypo name="new-message"  size={20} color={'white'} style={{paddingBottom: 20, paddingTop: 20, paddingLeft: 275, backgroundColor: 'black'}} />
       </TouchableOpacity>
     </View>
-    <View style={styles.container}>
       {
-        postlist.map((v, i) => {
-          return(
-            // <PostItem key={i} item={v}/>
-            <ScrollView style={styles.container}>
-            <Text style={styles.title}>{v.title}</Text>
-            {v.sections.map((section, index) => (
-              <Section key={index} type={section.type} content={section.content} />
-            ))}
-          </ScrollView>
 
+      
+
+        postlist.map((v, i) => {
+          
+          return(
+            <TouchableOpacity style={styles.container} onPress={() => handleDetails(i)}>
+            <View style={styles.headerContainer}>
+              <View style={styles.headerUserContainer}>
+                  {/* <Avatar imgSource={item.author.thumbnail_image_url} size={40}/> */}
+      
+                {/* <Text style={styles.headerUsername}>hi</Text> */}
+              </View>
+            </View>
+            <Image 
+              source={{uri: imagesInSection[i].images[0].content}}
+              style={styles.postImage}
+            />
+            <View style={styles.actionContainer}>
+            <View style={styles.headerContainer}>
+              <View style={styles.headerUserContainer}>
+                  <Avatar imgSource={v.author.thumbnail_image_url} size={40}/>
+                <Text style={styles.headerUsername}>{v.author.nickname}</Text>
+              </View>
+            </View>
+              <View style={styles.actionLeftContainer}>
+                  <TouchableOpacity onPress={handleThumbs}>
+                    <Entypo name="thumbs-up" size={20}   style={[
+              styles.actionItem,
+              { color: isLiked ? 'yellow' : 'white' },
+            ]}/>  
+                  </TouchableOpacity>
+              <Text style={styles.like}>100 likes</Text>
+               
+              </View>
+            </View>
+            <Text style={styles.postCreated}>{v.time}</Text>
+          </TouchableOpacity>
           )
         })
       }
-    </View>
     </ScrollView>
   );
 }
@@ -150,4 +161,73 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
   },
+  container: {
+    backgroundColor: 'black',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    marginBottom: '50'
+  },
+  headerUserContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerUsername: {
+    marginLeft: 6,
+    color: 'white'
+  },
+  postImage: {
+    width: '100%',
+    height: undefined,
+    aspectRatio: 1.2 / 1,
+    resizeMode: 'stretch',
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+  },
+  actionLeftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  actionContainerRight: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  actionItem: {
+    width: 25,
+    height: 25,
+    marginHorizontal: 10
+  },
+  descriptionContainer: {
+    paddingHorizontal: 20,
+  },
+  like: {
+    fontWeight: 'bold',
+    color: 'white'
+  },
+  username: {
+    fontWeight: 'bold',
+    color: 'white'
+  },
+  captionContainer: {
+    marginTop: 3,
+    color: 'white'
+  },
+  commentCount: {
+    marginLeft: 20,
+    marginTop: 10,
+    color: '#606060',
+  },
+  postCreated: {
+    marginLeft: 20,
+    marginTop: 0,
+    color: '#606060',
+    marginBottom: 30
+  }
 });

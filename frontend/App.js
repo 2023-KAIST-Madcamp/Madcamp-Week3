@@ -12,6 +12,7 @@ import Profile from './components/Profile';
 import Header from './components/Header';
 import NewPost from './components/NewPost';
 import Posts from './components/Posts';
+import Details from './components/Details';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ function App() {
           <Stack.Screen name = "Header" component={Header} options={{ headerShown: false }}/>
           <Stack.Screen name="NewPost" component={NewPost} />
           <Stack.Screen name="Posts" component={Posts} />
+          <Stack.Screen name="Details" component={Details} options={{ headerShown: true }} />
 
 
         </Stack.Navigator>
