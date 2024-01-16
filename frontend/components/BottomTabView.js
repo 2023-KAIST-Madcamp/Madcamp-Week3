@@ -1,8 +1,10 @@
 import React, {useEffect,useState} from 'react';
 import {useData} from '../context/DataContext'
-import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionic from 'react-native-vector-icons/Ionicons';
+import MapView, {Marker} from 'react-native-maps';
+import * as Location from 'expo-location';
 import Entypo from 'react-native-vector-icons/Entypo'
 import './global';
 
@@ -10,6 +12,7 @@ const BottomTabView = () => {
   const Tab = createMaterialTopTabNavigator();
   const [todayimage, setTodayimage] = useState([])
   const {userData} = useData()
+  
 
   useEffect(() => {
     const getImageFromBackend = async () => {
@@ -95,18 +98,24 @@ const BottomTabView = () => {
           width: '100%',
           height: '100%',
         }}>
-        <View>
-            {todayimage.map((data, index) => {
-              console.log(data.image)
-              return (
-                <View key={index}>
                   <View
                     style={{
                       flexDirection: 'row',
                       flexWrap: 'wrap',
                       justifyContent: 'space-between',
                       width: '100%',
-                    }}>
+                    }}>            
+                    {todayimage.map((data, index) => {
+              console.log(data.image)
+              return (
+                // <View key={index}>
+                  // <View
+                  //   style={{
+                  //     flexDirection: 'row',
+                  //     flexWrap: 'wrap',
+                  //     justifyContent: 'space-between',
+                  //     width: '100%',
+                  //   }}>
                     <TouchableOpacity
                       key={data._id}
                       style={{ paddingBottom: 2, width: '33%' }}>
@@ -115,8 +124,8 @@ const BottomTabView = () => {
                         style={{ width: '100%', height: 150 }}
                       />
                     </TouchableOpacity>
-                  </View>
-                </View>
+                  // {/* </View> */}
+                // </View>
               );
             })}
         </View>
@@ -126,17 +135,19 @@ const BottomTabView = () => {
   function MyLocations() {
     const {userData} = useData()
     const [mylocation, setMylocation] = useState([])
+    const [friendsLocation, setFriendsLocation] = useState([])
+
     useEffect(() => {
         const getLocation= async () => {
           // Your Flask backend endpoint for handling image uploads
-          const uploadEndpoint = 'http://143.248.192.190:5000/showmap';
+          const apiUrl = 'http://' + global.address + ':5000/mytodays'; // Replace with your backend API endpoint
       
             const requestData = {
               user_id: userData["user_id"],
             };
         
           try {
-            const uploadResponse = await fetch(uploadEndpoint, {
+            const uploadResponse = await fetch(apiUrl, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -146,15 +157,14 @@ const BottomTabView = () => {
     
             const responseData = await uploadResponse.json(); // Parse JSON response
             
-            console.log("The return value from showmap in MapPage")
+            console.log("The return value from mytodays in ProfilePage")
             console.log(responseData)
-            console.log(responseData.friends[0].location[0])
             
             
     
             if (uploadResponse.ok) {
               console.log('Got friends information successfully');
-              setFriendsLocation(responseData.friends);
+              setFriendsLocation(responseData.mytodays);
     
             } else {
               console.error('Couldnt get friends info:', uploadResponse.status, uploadResponse.statusText);
@@ -188,7 +198,7 @@ const BottomTabView = () => {
                         title={friend.nickname}
                     >
                         <Image
-                        source={{ uri: friend.thumbnail_image_url }}
+                        source={{ uri: friend.image}}
                         style={{ width: 40, height: 40 , resizeMode: 'contain', borderRadius: 50}}
                         />
                         </Marker>
@@ -232,3 +242,14 @@ const BottomTabView = () => {
 };
 
 export default BottomTabView;
+
+const styles = StyleSheet.create({
+  mapcontainer: {
+      backgroundColor: 'white'
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+    filter: 'grayscale(100%)'
+  },
+});

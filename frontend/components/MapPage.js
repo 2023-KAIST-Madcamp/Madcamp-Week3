@@ -23,14 +23,14 @@ export default function MapPage() {
   useEffect(() => {
     const getLocation= async () => {
       // Your Flask backend endpoint for handling image uploads
-      const uploadEndpoint = 'http://143.248.192.190:5000/showmap';
+      const apiUrl = 'http://' + global.address + ':5000/showmap'; // Replace with your backend API endpoint
   
         const requestData = {
           user_id: userData["user_id"],
         };
     
       try {
-        const uploadResponse = await fetch(uploadEndpoint, {
+        const uploadResponse = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

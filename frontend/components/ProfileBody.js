@@ -80,7 +80,7 @@ export const ProfileButtons = ({id, name, accountName, profileImage}) => {
 
   const handleAddFriend = () => {
     // Your backend endpoint for adding friends
-    const addFriendEndpoint = 'http://143.248.192.190:5000/addfriends';
+    const apiUrl = 'http://' + global.address + ':5000/addfriends'; // Replace with your backend API endpoint
 
     // Create an object with the necessary data
     const requestData = {
@@ -89,7 +89,7 @@ export const ProfileButtons = ({id, name, accountName, profileImage}) => {
     };
 
     // Send a POST request to the backend
-    fetch(addFriendEndpoint, {
+    fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
