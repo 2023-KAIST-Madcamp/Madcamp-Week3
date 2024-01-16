@@ -126,6 +126,9 @@ def showVelogs():
         for doc in sorted_velogs_to_show:
             if '_id' in doc:
                 doc['_id'] = str(doc['_id'])
+            author = user_collection.find_one({'_id' : ObjectId(doc['user_id'])})
+            author['_id'] = str(author['_id'])
+            doc['author'] = author
         return {'velogs_to_show' : sorted_velogs_to_show}
     
 @app.route('/showtodays', methods=['GET'])
@@ -193,11 +196,12 @@ def showFriends():
         friendsidlist = user['friends']
         print("this is friendsidlist")
         print(friendsidlist)
-        cursor = user_collection.find({'_id' : {'$in' : friendsidlist}})
+        cursor = user_collection.find({'_id' : {'$in' : list(map(ObjectId, friendsidlist))}})
         friendslist = list(cursor)
         for doc in friendslist:
             if '_id' in doc:
                 doc['_id'] = str(doc['_id'])
+        print(friendslist)
         return {'friendslist' : friendslist}
 
 @app.route('/addfriends', methods=['POST'])
