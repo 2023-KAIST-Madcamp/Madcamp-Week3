@@ -144,19 +144,19 @@ def createVelog():
         data = request.get_json()
         title = data['title']
         user_id = data['user_id']
-        contents = data['contents']
+        sections = data['sections']
         tags = data['tags']
         current = datetime.now()
-        result = velog_collection.insert_one({"title": title, "user_id": user_id, 'contents' : contents, "tags" : tags, "time": current.strftime("%Y-%m-%d %H:%M:%S"), "thumbs" : 0})
+        result = velog_collection.insert_one({"title": title, "user_id": user_id, 'sections' : sections, "tags" : tags, "time": current.strftime("%Y-%m-%d %H:%M:%S"), "thumbs" : 0})
         url = []
         index = 0
-        for content in contents:
-            if content['type'] == 'image':
-                new_url = save_image(content['content'], 'uploads/velogs/' + str(result.inserted_id) + str(index) +'.png')
-                content['content'] = new_url
+        for section in sections:
+            if section['type'] == 'image':
+                new_url = save_image(section['content'], 'uploads/velogs/' + str(result.inserted_id) + str(index) +'.png')
+                section['content'] = new_url
             index += 1
-        print(contents)
-        result = velog_collection.update_one({'_id': result.inserted_id}, {'$set': {'contents': contents}})
+        print(sections)
+        result = velog_collection.update_one({'_id': result.inserted_id}, {'$set': {'sections': sections}})
         if result:
             return {'issucessful' : True}
         else:
@@ -260,11 +260,12 @@ def myTodays():
         user_id = data['user_id']
         print("mytodays 들어옴")
         mytodays = list(today_collection.find({'user_id' : user_id}))
-        for doc in mytodays:
+        sorted_mytodays = sorted(mytodays, key=lambda doc: doc['time'], reverse = True)
+        for doc in sorted_mytodays:
             if '_id' in doc:
                 doc['_id'] = str(doc['_id'])
-        print(len(mytodays))
-        return {'mytodays' : mytodays}
+        print(len(sorted_mytodays))
+        return {'mytodays' : sorted_mytodays}
 
 @app.route('/showmap', methods=['POST'])
 def showMap():
