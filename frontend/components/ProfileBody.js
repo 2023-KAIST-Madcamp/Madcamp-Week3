@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
@@ -12,7 +12,40 @@ export const ProfileBody = ({
 }) => {
     const { userData } = useData(); // Get setUserData    console.log("This is the userdata in the profile page")
     console.log(userData)
+    const [followerArray, setFollowerArray] = useState([])
+    useEffect(() => {
+      const getFriendsFromBackend = async () => {
+        const uploadEndpoint = 'http://' + global.address + ':5000/showfriends';
+        const requestData = {
+    
+          user_id: userData["user_id"],
 
+      };
+        try {
+          const uploadResponse = await fetch(uploadEndpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+          const responseData = await uploadResponse.json(); // Parse JSON response
+          console.log(responseData)
+          setFollowerArray(responseData.friendslist)
+          if (uploadResponse.ok) {
+            console.log('Friends List Fetched successfully');
+            console.log(responseData)
+          } else {
+            console.error('Failed to get friendslist from backend:', uploadResponse.status, uploadResponse.statusText);
+          }
+        } catch (error) {
+          console.error('Error getting friendslist:', error);
+        }
+      }
+    
+      getFriendsFromBackend();
+    
+    }, []); // Provide an empty dependency array
   
   return (
     <View>
@@ -64,7 +97,7 @@ export const ProfileBody = ({
           <Text style={{color: 'white'}}>{userData["kakao_id"]}</Text>
         </View>
         <View style={{alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>20</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>{followerArray.length - 1}</Text>
           <Text style={{color: 'white'}}>Friends</Text>
         </View>
       </View>
@@ -165,27 +198,6 @@ export const ProfileButtons = ({id, name, accountName, profileImage}) => {
               style={{
                 width: '100%',
               }}>
-              <View
-                style={{
-                  width: '100%',
-                  height: 35,
-                  borderRadius: 5,
-                  borderColor: '#DEDEDE',
-                  borderWidth: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: 14,
-                    letterSpacing: 1,
-                    opacity: 0.8,
-                    color: 'white'
-                  }}>
-                  Edit Profile
-                </Text>
-              </View>
             </TouchableOpacity>    
         </View>
     </>

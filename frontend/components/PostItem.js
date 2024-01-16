@@ -1,38 +1,46 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import Entypo from 'react-native-vector-icons/Entypo'
 import Avatar from './Avatar'
 
-function PostItem({item}) {
-  return (
-    <View style={styles.container}>
-      {/* <View style={styles.headerContainer}>
-        <View style={styles.headerUserContainer}>
-            <Avatar imgSource={item.user.imgSource} size={40}/>
+function PostItem({item, key}) {
+  console.log("This is what the post item looks likes")
+  console.log(item)
+  console.log(item.sections)
+  // console.log(item.author.thumbnail_image_url)
+  const imagesInSection = item.sections.filter(section => section.type === 'image');
 
-          <Text style={styles.headerUsername}>{item.user.username}</Text>
+  
+
+  return (
+    <TouchableOpacity style={styles.container}>
+      <View style={styles.headerContainer}>
+        <View style={styles.headerUserContainer}>
+            {/* <Avatar imgSource={item.author.thumbnail_image_url} size={40}/> */}
+
+          {/* <Text style={styles.headerUsername}>hi</Text> */}
         </View>
-      </View> */}
+      </View>
       <Image 
-        source={item.imgSource}
+        source={{uri: imagesInSection[0].content}}
         style={styles.postImage}
       />
       <View style={styles.actionContainer}>
       <View style={styles.headerContainer}>
         <View style={styles.headerUserContainer}>
-            <Avatar imgSource={item.user.imgSource} size={40}/>
-          <Text style={styles.headerUsername}>{item.user.username}</Text>
+            <Avatar imgSource={item.author.thumbnail_image_url} size={40}/>
+          <Text style={styles.headerUsername}>{item.author.nickname}</Text>
         </View>
       </View>
         <View style={styles.actionLeftContainer}>
             
-        <Entypo name="heart" size={20}  style={[styles.actionItem, {color: 'red'}]}/>  
+        <Entypo name="thumbs-up" size={20}  style={[styles.actionItem, {color: 'white'}]}/>  
         <Text style={styles.like}>100 likes</Text>
          
         </View>
       </View>
       <Text style={styles.postCreated}>4 days ago</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 

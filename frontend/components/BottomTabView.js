@@ -120,7 +120,7 @@ const BottomTabView = () => {
                   //   }}>
                     <TouchableOpacity
                       key={data._id}
-                      style={{ paddingBottom: 2, width: '33%' }}>
+                      style={{ paddingBottom: 2, width: '50%' }}>
                       <Image
                         source={{ uri: data.image}}
                         style={{ width: '100%', height: 150 }}
@@ -165,14 +165,14 @@ const BottomTabView = () => {
             
     
             if (uploadResponse.ok) {
-              console.log('Got friends information successfully');
+              console.log('Got mytodays information successfully');
               setFriendsLocation(responseData.mytodays);
     
             } else {
-              console.error('Couldnt get friends info:', uploadResponse.status, uploadResponse.statusText);
+              console.error('Couldnt get mytodays info:', uploadResponse.status, uploadResponse.statusText);
             }
           } catch (error) {
-            console.error('Error getting friends info:', error);
+            console.error('Error getting mytodays info:', error);
           }
         };
     
