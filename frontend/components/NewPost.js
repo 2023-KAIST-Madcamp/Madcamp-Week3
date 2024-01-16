@@ -90,6 +90,7 @@ const BlogEditor = () => {
 
       if (uploadResponse.ok) {
         console.log('Image uploaded successfully');
+        
       } else {
         console.error('Failed to upload image:', uploadResponse.status, uploadResponse.statusText);
       }
