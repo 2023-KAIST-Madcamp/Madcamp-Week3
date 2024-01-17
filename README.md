@@ -27,7 +27,7 @@
 
 ### 1. 로딩창
 
-![StartPage](https://github.com/KAIST-MadCamp-Week2/TravelApp/assets/149778119/1c8d2dd4-6c1f-44c2-b711-829166011ada)
+![image](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/eeddac07-90e5-4567-82e3-96b9e1932cd1)
 
 #### 주요 특징
 
@@ -35,9 +35,7 @@
 
 ### 2. 메인화면
 
-![Profile](https://github.com/KAIST-MadCamp-Week2/TravelApp/assets/149778119/f73a9a27-7e0e-4b7e-a305-65fccdfc1232)
-
-![Wishlist](https://github.com/KAIST-MadCamp-Week2/TravelApp/assets/149778119/d8389324-22f5-4e63-8b8b-178666c50de4)
+![image](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/b61b8a87-73ad-4e1e-95e5-43f77c7f3a45)
 
 #### 주요 특징
 
@@ -46,9 +44,10 @@
 - 상단의 네비게이션 바를 클릭해서 탭을 이동할 수 있습니다.
 - 상단 우측의 프로필 버튼을 눌러 프로필 편집 화면으로 이동할 수 있습니다.
 
-### 3. DevLog
+![image](https://github.com/KAIST-MadCamp-Week2/TravelApp/assets/149778119/e28b0382-dd71-43de-ad1d-9b2347fc0869)
+![image](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/f8bb4d49-4eef-45d9-8bed-9dd7906d25bf)
 
-![Question](https://github.com/KAIST-MadCamp-Week2/TravelApp/assets/149778119/e28b0382-dd71-43de-ad1d-9b2347fc0869)
+### 3. DevLog
 
 ### 주요 특징
 
@@ -60,8 +59,6 @@
 
 ### 4. DevToday
 
-![Result](https://github.com/KAIST-MadCamp-Week2/TravelApp/assets/149778119/1062703a-459c-4722-8044-565f8dc5882c)
-
 #### 주요 특징
 
 - Today는 '오늘 개발 완료'라는 의미로 퇴근하기 전에 자신의 setup 사진을 찍어 올리는 공간입니다.
@@ -71,16 +68,12 @@
 
 ### 5. FriendMap
 
-
-
 #### 주요 특징
 
 - FriendMap에서는 내 친구들이 가장 최근에 올린 DevToday의 위치를 기반으로 지도에 친구들의 프로필 사진을 표시합니다.
 - 혼자 개발하는 시간이 많은 개발자들에게 다른 사람들과 같이 일을 하고 있다는 느낌을 주기 위해 추가한 기능입니다.
 
 ### 6. Profile
-
-
 
 #### 주요 특징
 
