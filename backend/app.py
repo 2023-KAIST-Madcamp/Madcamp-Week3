@@ -88,7 +88,7 @@ def login():
         else:
             print("존재하지 않는 아이디 -> db에 등록 실행")
             result = user_collection.insert_one({"kakao_id": kakao_id, "nickname": nickname, 'code' : str(kakao_id), "thumbnail_image_url" : thumbnail_image_url, "friends" : [], "location": "", "online" : False})
-            result = user_collection.update_one({'_id' : result.inserted_id}, {'$push': {'friends': str(result.inserted_id)}})
+            new_result = user_collection.update_one({'_id' : result.inserted_id}, {'$push': {'friends': str(result.inserted_id)}})
             return {'user_id' : str(result.inserted_id), 'kakao_id' : str(kakao_id), 'nickname' : str(nickname), 'code' : str(kakao_id), 'thumbnail_image_url' : str(thumbnail_image_url)}
 
 @app.route('/showvelogs', methods=['POST'])
@@ -130,6 +130,19 @@ def showVelogs():
             author['_id'] = str(author['_id'])
             doc['author'] = author
         return {'velogs_to_show' : sorted_velogs_to_show}
+    
+@app.route('/showvelog', methods=['POST'])
+def showVelog():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        velog_id = data['velog_id']
+        velog = velog_collection.find_one({'_id' : ObjectId(velog_id)})
+        isthumbedup = True if velog_rec_collection.find_one({'user_id' : user_id, 'velog_id' : velog_id}) else False
+        velog['_id'] = str(velog['_id'])
+        author = user_collection.find_one({'_id' : ObjectId(velog['user_id'])})
+        author['_id'] = str(author['_id'])
+        return {'velog' : velog, 'isthumbedup' : isthumbedup, 'author' : author}
     
 @app.route('/showtodays', methods=['GET'])
 def showTodays():
@@ -225,6 +238,7 @@ def addFriends():
 def myVelogs():
     if request.method == 'POST':
         data = request.get_json()
+        print("myvelogs 들어옴")
         user_id = data['user_id']
         tags_to_find = data['tags']
         isdescending = data['isdescending']
@@ -248,10 +262,12 @@ def giveThumb():
         if thumbed:
             upordown = -1
             velog_rec_collection.delete_one({'velog_id' : velog_id, 'user_id' : user_id})
+            print('yesthumb -> nothumb')
         else:
             upordown = 1
             current_time = datetime.now()
             velog_rec_collection.insert_one({'velog_id' : velog_id, 'user_id' : user_id, 'time' : current_time.strftime("%Y-%m-%d %H:%M:%S")})
+            print('nothumb -> yesthumb')
         old_thumbs = velog_collection.find_one({'_id' : ObjectId(velog_id)})['thumbs']
         result = velog_collection.update_one({'_id': ObjectId(velog_id)}, {'$set': {'thumbs': old_thumbs + upordown}})
         if thumbed: return {'isthumbedup' : False}
@@ -323,7 +339,7 @@ def save_image(base64_string, image_path):
     image.save(image_path)
     
     # 저장된 이미지의 URL을 생성합니다. (예: 웹 서버의 URL)
-    image_url = f'http://43.202.52.148:5000/{image_path}'
+    image_url = f'http://192.249.31.81:5000/{image_path}'
     
     return image_url
     
