@@ -29,7 +29,7 @@ function App() {
           <Stack.Screen name = "Header" component={Header} options={{ headerShown: false }}/>
           <Stack.Screen name="NewPost" component={NewPost} />
           <Stack.Screen name="Posts" component={Posts} />
-          <Stack.Screen name="Details" component={Details} options={{ headerShown: true }} />
+          <Stack.Screen name="Details" component={Details} options={{ headerShown: false }} />
 
 
         </Stack.Navigator>
