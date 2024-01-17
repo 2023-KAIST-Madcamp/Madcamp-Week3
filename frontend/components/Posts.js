@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
     height: undefined,
     aspectRatio: 1.2 / 1,
     resizeMode: 'stretch',
-    
   },
   actionContainer: {
     flexDirection: 'row',
