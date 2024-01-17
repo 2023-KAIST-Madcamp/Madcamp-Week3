@@ -44,7 +44,6 @@
 - 상단의 네비게이션 바를 클릭해서 탭을 이동할 수 있습니다.
 - 상단 우측의 프로필 버튼을 눌러 프로필 편집 화면으로 이동할 수 있습니다.
 
-![image](https://github.com/KAIST-MadCamp-Week2/TravelApp/assets/149778119/e28b0382-dd71-43de-ad1d-9b2347fc0869)
 ![image](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/f8bb4d49-4eef-45d9-8bed-9dd7906d25bf)
 
 ### 3. DevLog
