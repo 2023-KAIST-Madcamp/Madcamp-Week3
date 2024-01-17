@@ -23,7 +23,7 @@ function App() {
   return (
     <DataProvider>
       <NavigationContainer >
-        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName="FirstPage" screenOptions={{ headerShown: false }}>
           <Stack.Screen name = "Login" component={Login} options={{ headerShown: false }}/>
           <Stack.Screen name = "CameraApp" component={CameraApp} options={{ headerShown: false }}/>
           <Stack.Screen name = "Home" component={Home} options={{ headerShown: false }}/>
