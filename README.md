@@ -87,7 +87,7 @@
 
 ### 기술 특징
 
-- dp 저장 형태
+- DB 저장 형태
   
 |Collection|Document|
 |------|--- |
@@ -96,5 +96,5 @@
 |Velog|{_id, title, user_id, sections, tags, time, thumbs} |
 |Velog_Recommended|{_id, velog_id, user_id, time} |
 
-- frontend에서 보낸 사진파일을 backend에서 저장하고 url형태로 db에 저장합니다.
+- frontend에서 이미지를 base64로 encoding 후 backend로 보낸 다음 decoding을 통해 이미지 파일을 저장해 uri 형태로 DB에 저장합니다. 이를 통해 프론트엔드의 이미지 로딩 속도를 대폭 향상시킴킴
 - Backend 서버는 AWS EC2에 배포해 nohup을 통해 백그라운드로 실행하고 있습니다.
