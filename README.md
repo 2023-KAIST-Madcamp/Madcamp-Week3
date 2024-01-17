@@ -25,9 +25,9 @@
 
 ## c. 어플리케이션 소개
 
-### 1. 로딩창
+### 1. 로그인 화면
 
-![image](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/eeddac07-90e5-4567-82e3-96b9e1932cd1)
+![image 4](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/dce052b9-74f3-40b5-881e-b8dda6cc2ed3)
 
 #### 주요 특징
 
