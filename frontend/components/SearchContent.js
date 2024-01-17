@@ -170,6 +170,7 @@ export default function SearchContent(props) {
           flexWrap: 'wrap',
           justifyContent: 'space-between',
           width: '100%',
+          backgroundColor: '#202020'
         }}>
         {
           todayimage.map((samedays, index_samedays) => {

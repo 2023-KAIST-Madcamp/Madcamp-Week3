@@ -15,6 +15,7 @@ import Posts from './components/Posts';
 import Details from './components/Details';
 import BottomTabView from './components/BottomTabView';
 import FriendsList from './components/FriendsList';
+import FirstPage from './components/FirstPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,7 @@ function App() {
           <Stack.Screen name="Details" component={Details} options={{ headerShown: true }} />
           <Stack.Screen name="BottomTabView" component={BottomTabView} />
           <Stack.Screen name="FriendsList" component={FriendsList} />
+          <Stack.Screen name="FirstPage" component={FirstPage} />
 
 
         </Stack.Navigator>
