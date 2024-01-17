@@ -47,41 +47,6 @@ function Posts() {
         console.error('Error getting Velogs :', error);
       }
     }
- const handleDetails = (i) => {
-  navigation.navigate('Details', {key: i})
- }
- const handleProfile = (i) => {
-  navigation.navigate('Profile', )
- }
- useEffect(() => {
-  const getVelogFromBackend = async () => {
-    const uploadEndpoint = 'http://' + global.address + ':5000/showvelogs';
-    const requestData = {
-      tags: [],
-      sortby: "time",
-      isdescending: true
-  };
-    try {
-      const uploadResponse = await fetch(uploadEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
-      const responseData = await uploadResponse.json(); // Parse JSON response
-      console.log("This is the data from showvelogs in the home screen")
-      console.log(responseData)
-      setPostlist(responseData.velogs_to_show)
-      if (uploadResponse.ok) {
-        console.log('Velog Fetched successfully');
-      } else {
-        console.error('Failed to get velog from backend:', uploadResponse.status, uploadResponse.statusText);
-      }
-    } catch (error) {
-      console.error('Error getting Velogs :', error);
-    }
-  }
 
     getVelogFromBackend();
 
@@ -165,38 +130,6 @@ function Posts() {
               </View>
               <Text style={styles.postCreated}>{v.time}</Text>
             </TouchableOpacity>
-      
-                {/* <Text style={styles.headerUsername}>hi</Text> */}
-              </View>
-            </View>
-            {/* <Image 
-              source={{uri: imagesInSection[i].images[0].content}}
-              style={styles.postImage}
-            /> */}
-            {imagesInSection[i].images.length !== 0 &&
-                <Image
-                  source={{ uri: imagesInSection[i].images[0].content }}
-                  style={styles.postImage}
-                />
-              }
-            <View style={styles.actionContainer}>
-            <View style={styles.headerContainer}>
-              <View style={styles.headerUserContainer}>
-                  <Avatar imgSource={v.author.thumbnail_image_url} size={40}/>
-                <Text style={styles.headerUsername}>{v.author.nickname}</Text>
-              </View>
-            </View>
-              <View style={styles.actionLeftContainer}>
-                    <Entypo name="thumbs-up" size={20}   style={[
-              styles.actionItem,
-              { color: isLiked ? 'yellow' : 'white' },
-            ]}/>  
-              <Text style={styles.like}>100 likes</Text>
-               
-              </View>
-            </View>
-            <Text style={styles.postCreated}>{v.time}</Text>
-          </TouchableOpacity>
           )
         })
       }
