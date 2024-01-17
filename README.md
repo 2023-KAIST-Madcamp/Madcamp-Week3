@@ -40,7 +40,7 @@
 #### 주요 특징
 
 - 카카오톡 로그인을 통해 사용자 이름 및 프로필 사진을 불러올 수 있습니다.
-- 3가지 탭(Velog, Today, Map)으로 구성되어 있습니다.
+- 3가지 탭(DevLog, Today, Map)으로 구성되어 있습니다.
 - 상단의 네비게이션 바를 클릭해서 탭을 이동할 수 있습니다.
 - 상단 우측의 프로필 버튼을 눌러 프로필 편집 화면으로 이동할 수 있습니다.
 ![image](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/d9f3e730-8881-4ba3-8c52-bce16668cb43)
