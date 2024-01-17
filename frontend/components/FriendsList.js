@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity, Button } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native'
 import { useData } from '../context/DataContext';
 import Avatar from './Avatar';
 export default function FriendsList() {
@@ -35,6 +35,7 @@ export default function FriendsList() {
 
   const handleDelete = (friend_id) => {
     deleteFriend(friend_id)
+    Alert.alert('Friend deleted', 'Friend deleted successfully.');
   }
 
   useEffect(() => {
@@ -74,21 +75,24 @@ export default function FriendsList() {
     <View style={{ backgroundColor: 'black', flex: 1 }}>
     <Text style={styles.header}>Friends</Text>
     {
-      followerArray.map((item, index) => (
-        <View key={item.id} style={styles.container}>
-          <Text style={styles.text}>
-            {item.name}
-          </Text>
-          <View style={styles.headerUserContainer}>
-            <Avatar imgSource={item.thumbnail_image_url} size={40} />
-            <Text style={styles.headerUsername}>{item.nickname}</Text>
-            {item._id != userData['user_id'] &&
-            <TouchableOpacity style={styles.deleteButton} onPressOut={()=>handleDelete(item._id)}>
-              <Text style={styles.buttonText}>Delete</Text>
-            </TouchableOpacity>}
-          </View>
-        </View>
-      ))
+      followerArray.map((item, index) => {
+        if (item._id !== userData['user_id']) {
+          return (
+            <View key={item.id} style={styles.container}>
+              <Text style={styles.text}>
+                {item.name}
+              </Text>
+              <View style={styles.headerUserContainer}>
+                <Avatar imgSource={item.thumbnail_image_url} size={40} />
+                <Text style={styles.headerUsername}>{item.nickname}</Text>
+                <TouchableOpacity style={styles.deleteButton} onPressOut={() => handleDelete(item._id)}>
+                  <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )
+        }
+      })
     }
   </View>
   )
