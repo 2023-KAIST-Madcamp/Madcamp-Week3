@@ -13,6 +13,8 @@ import Header from './components/Header';
 import NewPost from './components/NewPost';
 import Posts from './components/Posts';
 import Details from './components/Details';
+import BottomTabView from './components/BottomTabView';
+import FriendsList from './components/FriendsList';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +32,8 @@ function App() {
           <Stack.Screen name="NewPost" component={NewPost} />
           <Stack.Screen name="Posts" component={Posts} />
           <Stack.Screen name="Details" component={Details} options={{ headerShown: false }} />
+          <Stack.Screen name="BottomTabView" component={BottomTabView} />
+          <Stack.Screen name="FriendsList" component={FriendsList} />
 
 
         </Stack.Navigator>
