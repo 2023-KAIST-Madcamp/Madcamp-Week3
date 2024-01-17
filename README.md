@@ -43,8 +43,7 @@
 - 3가지 탭(Velog, Today, Map)으로 구성되어 있습니다.
 - 상단의 네비게이션 바를 클릭해서 탭을 이동할 수 있습니다.
 - 상단 우측의 프로필 버튼을 눌러 프로필 편집 화면으로 이동할 수 있습니다.
-
-![image](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/f8bb4d49-4eef-45d9-8bed-9dd7906d25bf)
+![image](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/d9f3e730-8881-4ba3-8c52-bce16668cb43)
 
 ### 3. DevLog
 
@@ -71,6 +70,11 @@
 
 - FriendMap에서는 내 친구들이 가장 최근에 올린 DevToday의 위치를 기반으로 지도에 친구들의 프로필 사진을 표시합니다.
 - 혼자 개발하는 시간이 많은 개발자들에게 다른 사람들과 같이 일을 하고 있다는 느낌을 주기 위해 추가한 기능입니다.
+
+
+
+![profile](https://github.com/HYJP-KAIST-Madcamp-Week3/MadCamp3/assets/68769481/370d388b-bed1-45ad-b57f-b17c48a7ec19)
+
 
 ### 6. Profile
 
