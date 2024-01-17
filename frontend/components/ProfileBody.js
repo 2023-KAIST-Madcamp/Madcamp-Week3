@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, Image, TouchableOpacity, TextInput, Alert} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import { useData } from '../context/DataContext';
@@ -138,6 +138,7 @@ export const ProfileButtons = ({id, name, accountName, profileImage}) => {
       .then((responseData) => {
         // Handle the response from the backend if needed
         console.log(responseData);
+        Alert.alert('Friend added', 'Friend added successfully.');
       })
       .catch((error) => {
         console.error('Error adding friend:', error);
