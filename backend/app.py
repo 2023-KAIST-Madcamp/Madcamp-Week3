@@ -323,7 +323,7 @@ def save_image(base64_string, image_path):
     image.save(image_path)
     
     # 저장된 이미지의 URL을 생성합니다. (예: 웹 서버의 URL)
-    image_url = f'http://192.249.31.81:5000/{image_path}'
+    image_url = f'http://43.202.52.148:5000/{image_path}'
     
     return image_url
     
