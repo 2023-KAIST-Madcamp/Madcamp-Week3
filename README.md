@@ -1,6 +1,6 @@
-# FindMyTrip
+# DevToday
 
-### KAIST MadCamp Week2
+### KAIST MadCamp Week3
 
 ---
 
