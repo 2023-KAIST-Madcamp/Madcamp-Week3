@@ -1,1 +1,1 @@
-global.address = '43.202.52.148';
+global.address = '192.249.31.81';

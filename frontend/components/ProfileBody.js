@@ -46,6 +46,11 @@ export const ProfileBody = ({
       getFriendsFromBackend();
     
     }, []); // Provide an empty dependency array
+    const navigation = useNavigation();
+
+    const handleFriends = (i) => {
+      navigation.navigate('FriendsList')
+     }
   
   return (
     <View>
@@ -96,10 +101,10 @@ export const ProfileBody = ({
           <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>{userData["nickname"]}</Text>
           <Text style={{color: 'white'}}>{userData["kakao_id"]}</Text>
         </View>
-        <View style={{alignItems: 'center'}}>
+        <TouchableOpacity onPress={() => handleFriends()} style={{alignItems: 'center'}}>
           <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>{followerArray.length - 1}</Text>
           <Text style={{color: 'white'}}>Friends</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

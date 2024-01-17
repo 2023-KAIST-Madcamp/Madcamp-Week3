@@ -18,6 +18,9 @@ function Posts() {
  const handleDetails = (i) => {
   navigation.navigate('Details', {key: i})
  }
+ const handleProfile = (i) => {
+  navigation.navigate('Profile', )
+ }
  useEffect(() => {
   const getVelogFromBackend = async () => {
     const uploadEndpoint = 'http://' + global.address + ':5000/showvelogs';
@@ -107,10 +110,16 @@ const handleThumbs = () => {
                 {/* <Text style={styles.headerUsername}>hi</Text> */}
               </View>
             </View>
-            <Image 
+            {/* <Image 
               source={{uri: imagesInSection[i].images[0].content}}
               style={styles.postImage}
-            />
+            /> */}
+            {imagesInSection[i].images.length !== 0 &&
+                <Image
+                  source={{ uri: imagesInSection[i].images[0].content }}
+                  style={styles.postImage}
+                />
+              }
             <View style={styles.actionContainer}>
             <View style={styles.headerContainer}>
               <View style={styles.headerUserContainer}>
@@ -119,12 +128,10 @@ const handleThumbs = () => {
               </View>
             </View>
               <View style={styles.actionLeftContainer}>
-                  <TouchableOpacity onPress={handleThumbs}>
                     <Entypo name="thumbs-up" size={20}   style={[
               styles.actionItem,
               { color: isLiked ? 'yellow' : 'white' },
             ]}/>  
-                  </TouchableOpacity>
               <Text style={styles.like}>100 likes</Text>
                
               </View>
