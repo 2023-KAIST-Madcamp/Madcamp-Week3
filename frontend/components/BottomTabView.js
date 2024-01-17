@@ -137,7 +137,7 @@ const handleDetails = (i) => {
 postlist.map((v, i) => {
   
   return(
-    <TouchableOpacity style={styles.container} onPress={() => handleDetails(i)}>
+    <TouchableOpacity style={styles.container} onPress={() => handleDetails(v._id)}>
     <View style={styles.headerContainer}>
       <View style={styles.headerUserContainer}>
           {/* <Avatar imgSource={item.author.thumbnail_image_url} size={40}/> */}
@@ -167,7 +167,7 @@ postlist.map((v, i) => {
       styles.actionItem,
       { color: isLiked ? 'yellow' : 'white' },
     ]}/>  
-      <Text style={styles.like}>100 likes</Text>
+      <Text style={styles.like}>{v.thumbs} likes</Text>
        
       </View>
     </View>

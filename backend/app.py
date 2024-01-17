@@ -222,7 +222,6 @@ def addFriends():
     if request.method == 'POST':
         data = request.get_json()
         user_id = ObjectId(data['user_id'])
-        print(type(user_id))
         user_code = data['code']
         findfriend = user_collection.find_one({'code' : user_code})
         if(findfriend):
@@ -233,6 +232,17 @@ def addFriends():
             return {'issucessful' : True}
         else:
             return {'issucessful' : False}
+        
+@app.route('/deletefriend', methods=['POST'])
+def deleteFriend():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = ObjectId(data['user_id'])
+        target_id = data['target_id']
+        print("user_id" + str(user_id))
+        print("target_id" + target_id)
+        result = user_collection.update_one({'_id': user_id}, {'$pull': {'friends': target_id}})
+        return {'issucessful' : True}
         
 @app.route('/myvelogs', methods=['POST'])
 def myVelogs():
