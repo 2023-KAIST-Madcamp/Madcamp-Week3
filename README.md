@@ -92,11 +92,13 @@
 ### 기술 특징
 
 - dp 저장 형태
+  
 |Collection|Document|
-|------|---|
-|User|{_id, kakao_id, nickname, code, thumbnail_image_url, [friends], location, online}|
-|Today|{_id, user_id, image, location, time}|
-|Velog|{_id, title, user_id, sections, tags, time, thumbs}|
-|Velog_Recommended|{_id, velog_id, user_id, time}|
+|------|--- |
+|User|{_id, kakao_id, nickname, code, thumbnail_image_url, [friends], location, online} |
+|Today|{_id, user_id, image, location, time} |
+|Velog|{_id, title, user_id, sections, tags, time, thumbs} |
+|Velog_Recommended|{_id, velog_id, user_id, time} |
+
 - frontend에서 보낸 사진파일을 backend에서 저장하고 url형태로 db에 저장합니다.
 - Backend 서버는 AWS EC2에 배포해 nohup을 통해 백그라운드로 실행하고 있습니다.
