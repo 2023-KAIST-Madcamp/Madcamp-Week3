@@ -72,10 +72,6 @@ function Posts() {
   // console.log(imagesInSection[0].images[0].content)
   const [isLiked, setIsLiked] = useState(false);
 
-  const handleThumbs = () => {
-    setIsLiked(!isLiked);
-    // Add your logic for handling the like/unlike action here
-  };
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}>
